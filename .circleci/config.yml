@@ -21,6 +21,7 @@ orbs:
             #default: https://api-skat27e9.castles.prismacloud.io/login
         steps:
           - checkout
+          - run: ls
           - echo_command 
           - auth:
               pc_username: <<parameters.pc_username>>
