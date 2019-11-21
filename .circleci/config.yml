@@ -17,7 +17,7 @@ orbs:
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         steps:
-          - run: curl --proxy http://127.0.0.1:8080 -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt
+          - run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt
     executors:
       default:
         machine: true
