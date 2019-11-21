@@ -51,11 +51,13 @@ orbs:
           - run: 
               command: |
                 token=$(curl -X POST <<parameters.pc_host>> -H 'Content-Type:application/json' -d '{"username":"<<parameters.pc_username>>", "password":"<<parameters.pc_password>>"}'|jq .token| tr -d '"') 
+                echo "token: " $token
+                export AUTH_TOKEN=$token
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         steps:
           #- run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt
-          - run: curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$token' -d '{"resource":[{"google_compute_subnetwork":[{"subnet-with-logging":[{"name":"log-test-subnetwork"}]}]}]}'
+          - run: curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$AUTH_TOKEN' -d '{"resource":[{"google_compute_subnetwork":[{"subnet-with-logging":[{"name":"log-test-subnetwork"}]}]}]}'
     executors:
       default:
         machine: true
