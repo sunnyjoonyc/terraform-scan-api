@@ -6,14 +6,48 @@ orbs:
     jobs:
       scan_job:
         executor: default
+        parameters:
+          pc_username:
+            description: Username for authnetication
+            type: string
+            #default: techops+provision@redlock.io
+          pc_password:
+            description: User password for authentication
+            type: string
+            #default: iYS2ZjfKHyQcQpIg55RP
+          pc_host:
+            description: host url for getting the token
+            type: string
+            #default: https://api-skat27e9.castles.prismacloud.io/login
         steps:
           - checkout
           - echo_command 
+          - auth:
+              pc_username: <<parameters.pc_username>>
+              pc_password: <<parameters.pc_password>>
+              pc_host: <<parameters.pc_host>>        
           - scan
     commands:
       echo_command:
         steps:
            - run: echo "my custom checkout"
+      auth:
+        description: API call for authentication. User input will be host, username & password. Response will be the auth token to be passed on in scan command.
+        parameters:
+          pc_username:
+            description: Username for authnetication
+            type: string
+            #default: techops+provision@redlock.io
+          pc_password:
+            description: User password for authentication
+            type: string
+            #default: iYS2ZjfKHyQcQpIg55RP
+          pc_host:
+            description: host url for getting the token
+            type: string          
+            #default: https://api-skat27e9.castles.prismacloud.io/login
+        steps:
+          - run: curl -X POST <<parameters.pc_host>> -d '{"username":"<<parameters.pc_username>>", "password":"<<parameters.pc_password>>"}' 
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         steps:
@@ -25,5 +59,8 @@ orbs:
 workflows:  
   build-test-deploy:
     jobs:
-      - scan_image/scan_job
+      - scan_image/scan_job:
+          pc_username: techops+provision@redlock.io
+          pc_password: iYS2ZjfKHyQcQpIg55RP
+          pc_host: https://api-skat27e9.castles.prismacloud.io/login
 
