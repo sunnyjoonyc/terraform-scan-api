@@ -70,6 +70,6 @@ workflows:
     jobs:
       - scan_image/scan_job:
           pc_username: techops+provision@redlock.io
-          pc_password: iYS2ZjfKHyQcQpIg55RP
-          pc_host: https://api-skat27e9.castles.prismacloud.io/login
+          pc_password: LjXgyP11CsjeF86ZAVps 
+          pc_host: https://api-kratcce2.castles.prismacloud.io/login
 
