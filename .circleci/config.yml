@@ -6,18 +6,61 @@ orbs:
     jobs:
       scan_job:
         executor: default
+        parameters:
+          pc_username:
+            description: Username for authnetication
+            type: string
+            #default: techops+provision@redlock.io
+          pc_password:
+            description: User password for authentication
+            type: string
+            #default: iYS2ZjfKHyQcQpIg55RP
+          pc_host:
+            description: host url for getting the token
+            type: string
+            #default: https://api-skat27e9.castles.prismacloud.io/login
         steps:
           - checkout
+          - run: ls
           - echo_command 
+        #  - auth:
+        #      pc_username: <<parameters.pc_username>>
+        #      pc_password: <<parameters.pc_password>>
+        #      pc_host: <<parameters.pc_host>>        
           - scan
     commands:
       echo_command:
         steps:
            - run: echo "my custom checkout"
+      auth:
+        description: API call for authentication. User input will be host, username & password. Response will be the auth token to be passed on in scan command.
+        parameters:
+          pc_username:
+            description: Username for authnetication
+            type: string
+            #default: techops+provision@redlock.io
+          pc_password:
+            description: User password for authentication
+            type: string
+            #default: iYS2ZjfKHyQcQpIg55RP
+          pc_host:
+            description: host url for getting the token
+            type: string          
+            #default: https://api-skat27e9.castles.prismacloud.io/login
+        steps:
+          - run: 
+              command: |
+                token=$(curl -X POST <<parameters.pc_host>> -H 'Content-Type:application/json' -d '{"username":"<<parameters.pc_username>>", "password":"<<parameters.pc_password>>"}'|jq .token| tr -d '"') 
+                echo "token: " $token
+                export AUTH_TOKEN=$token
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         steps:
-          - run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt
+          #- run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$AUTH_TOKEN' -d
+          - run:
+              command: |
+                response=$(curl -X POST https://scanapi.redlock.io/v1/iac -d '{"resource":[{"google_compute_subnetwork":[{"subnet-with-logging":[{"name":"log-test-subnetwork"}]}]}]}')
+                echo "response: " $response
     executors:
       default:
         machine: true
@@ -25,5 +68,8 @@ orbs:
 workflows:  
   build-test-deploy:
     jobs:
-      - scan_image/scan_job
+      - scan_image/scan_job:
+          pc_username: techops+provision@redlock.io
+          pc_password: LjXgyP11CsjeF86ZAVps 
+          pc_host: https://api-kratcce2.castles.prismacloud.io/login
 
