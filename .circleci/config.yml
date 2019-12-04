@@ -56,10 +56,10 @@ orbs:
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         steps:
-          #- run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt
+          #- run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$AUTH_TOKEN' -d
           - run:
               command: |
-                response=$(curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$AUTH_TOKEN' -d '{"resource":[{"google_compute_subnetwork":[{"subnet-with-logging":[{"name":"log-test-subnetwork"}]}]}]}')
+                response=$(curl -X POST https://scanapi.redlock.io/v1/iac -d '{"resource":[{"google_compute_subnetwork":[{"subnet-with-logging":[{"name":"log-test-subnetwork"}]}]}]}')
                 echo "response: " $response
     executors:
       default:
