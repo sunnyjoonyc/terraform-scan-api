@@ -23,10 +23,10 @@ orbs:
           - checkout
           - run: ls
           - echo_command 
-          - auth:
-              pc_username: <<parameters.pc_username>>
-              pc_password: <<parameters.pc_password>>
-              pc_host: <<parameters.pc_host>>        
+        #  - auth:
+        #      pc_username: <<parameters.pc_username>>
+        #      pc_password: <<parameters.pc_password>>
+        #      pc_host: <<parameters.pc_host>>        
           - scan
     commands:
       echo_command:
