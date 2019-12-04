@@ -23,9 +23,7 @@ orbs:
           - checkout
           - run: pwd
           - run: ls
-          - run: mkdir -p workspace && cp * "$_"
-          - run: ls
-          - run: cd workspace
+          - run: zip -r repo.zip .
           - run: ls
           - echo_command 
         #  - auth:
