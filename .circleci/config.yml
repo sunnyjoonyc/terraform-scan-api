@@ -21,6 +21,11 @@ orbs:
             #default: https://api-skat27e9.castles.prismacloud.io/login
         steps:
           - checkout
+          - run: pwd
+          - run: ls
+          - run: mkdir -p workspace && cp * "$_"
+          - run: ls
+          - run: cd workspace
           - run: ls
           - echo_command 
         #  - auth:
