@@ -69,10 +69,12 @@ orbs:
                 echo "result: " $result
                 echo "matched: " $matched
                 echo "stats: " $stats
+                mkdir results
+                echo "matched: " $matched > results/matched.json 
           - store_test_results:
-              path: $matched
+              path: results/matched.json 
           - store_artifacts:
-              path: $matched
+              path: results/matched.json
     executors:
       default:
         machine: true
