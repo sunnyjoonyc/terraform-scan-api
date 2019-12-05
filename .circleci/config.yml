@@ -70,11 +70,11 @@ orbs:
                 echo "matched: " $matched
                 echo "stats: " $stats
                 mkdir results
-                echo "matched: " $matched > results/matched.json 
-          - store_test_results:
-              path: results/matched.json 
+                echo "matched: " $matched | jq -r '.matched' > results/matched.json 
+                echo \<html\> \<body\>abc\\<\/body\><\/html\>
+                echo \<html\> \<body\>abc\\<\/body\><\/html\> > results/results.html
           - store_artifacts:
-              path: results/matched.json
+              path: results/results.html
     executors:
       default:
         machine: true
