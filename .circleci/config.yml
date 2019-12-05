@@ -71,9 +71,9 @@ orbs:
                 echo "stats: " $stats
                 mkdir results
                 echo $matched | jq -r '.[] | "\(.severity)\t\(.name)"' 
-                echo $matched | jq -r '.[] | "\(.severity)\t\(.name)"'> results/matched.json
+                echo $matched | jq -r '.[] | "\(.severity)\t\(.name)"'> results/matched
           - store_artifacts:
-              path: results/results.html
+              path: results/matched
     executors:
       default:
         machine: true
