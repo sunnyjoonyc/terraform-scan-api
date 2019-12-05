@@ -70,9 +70,9 @@ orbs:
                 echo "matched: " $matched
                 echo "stats: " $stats
                 mkdir results
-                echo "matched: " $matched | jq -r '.matched' > results/matched.json 
-                echo \<html\> \<body\>abc\<\/body\><\/html\>
-                echo \<html\> \<body\>abc\<\/body\><\/html\> > results/results.html
+                echo "matched: " $matched | jq -r '.[] | "\(.severity)\t\(.name)"' 
+                echo "matched: " $matched | jq -r '.[] | "\(.severity)\t\(.name)"'> results/matched.json
+                echo "<html>" >> $html
           - store_artifacts:
               path: results/results.html
     executors:
