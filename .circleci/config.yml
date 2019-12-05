@@ -77,6 +77,8 @@ orbs:
                 ls results/results.html
           - store_artifacts:
               path: results/results.html
+           - store_artifacts:
+              path: results/matched.csv
     executors:
       default:
         machine: true
