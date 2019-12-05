@@ -62,8 +62,14 @@ orbs:
           #- run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$AUTH_TOKEN' -d
           - run:
               command: |
-                response=$(curl -X POST https://scanapi.redlock.io/v1/iac --data-binary @repo.zip|jq .response.result)
+                local response=$(curl -X POST https://scanapi.redlock.io/v1/iac --data-binary @repo.zip)
                 echo "response: " $response
+                local result="$(echo "$response" | jq -r '.result.is_successful')"
+                local matched="$(echo "$response" | jq -r '.result.rules_matched')"
+                local stats="$(echo "$response" | jq -r '.result.severity_stats')"
+                echo "result: " $result
+                echo "matched: " $matched
+                echo "stats: " $stats
     executors:
       default:
         machine: true
