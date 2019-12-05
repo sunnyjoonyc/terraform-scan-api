@@ -74,6 +74,7 @@ orbs:
                 echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/matched.csv
                 echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/matched.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
                 echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/matched.csv ; echo "</table>"; echo "</body>" ; echo "</html>" >results/results.html
+                ls results/results.html
           - store_artifacts:
               path: results/results.html
     executors:
