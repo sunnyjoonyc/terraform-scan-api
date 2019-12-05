@@ -72,7 +72,7 @@ orbs:
                 mkdir results
                 echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv' 
                 echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/matched.csv
-                echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < matched.csv ; echo "</table>"
+                echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/matched.csv ; echo "</table>"
           - store_artifacts:
               path: results/matched.csv
     executors:
