@@ -71,8 +71,8 @@ orbs:
                 echo "stats: " $stats
                 mkdir results
                 echo "matched: " $matched | jq -r '.matched' > results/matched.json 
-                echo \<html\> \<body\>abc\\<\/body\><\/html\>
-                echo \<html\> \<body\>abc\\<\/body\><\/html\> > results/results.html
+                echo \<html\> \<body\>abc\<\/body\><\/html\>
+                echo \<html\> \<body\>abc\<\/body\><\/html\> > results/results.html
           - store_artifacts:
               path: results/results.html
     executors:
