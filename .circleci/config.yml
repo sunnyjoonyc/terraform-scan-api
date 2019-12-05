@@ -70,8 +70,8 @@ orbs:
                 echo "matched: " $matched
                 echo "stats: " $stats
                 mkdir results
-                echo $matched | jq -r '.[] | "\(.name)\t\(.severity)\t\(.rule)\t\(.files)"' 
-                echo $matched | jq -r '.[] | "\(.name)\t\(.severity)\t\(.rule)\t\(.files)"'> results/matched
+                echo $matched | jq -r '.[] | "\(.files)\t\(.name)\t\(.severity)"' #\t\(.rule)\t\(.files)"' 
+                echo $matched | jq -r '.[] | "\(.files)\t\(.name)\t\(.severity)"'> results/matched
           - store_artifacts:
               path: results/matched
     executors:
