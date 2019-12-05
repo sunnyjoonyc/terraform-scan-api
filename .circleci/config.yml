@@ -63,13 +63,16 @@ orbs:
           - run:
               command: |
                 response=$(curl -X POST https://scanapi.redlock.io/v1/iac --data-binary @repo.zip)
-                echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
                 matched="$(echo "$response" | jq -r '.result.rules_matched')"
                 stats="$(echo "$response" | jq -r '.result.severity_stats')"
                 echo "result: " $result
                 echo "matched: " $matched
                 echo "stats: " $stats
+          - store_test_results:
+              path: $matched
+          - store_artifacts:
+              path: $matched
     executors:
       default:
         machine: true
