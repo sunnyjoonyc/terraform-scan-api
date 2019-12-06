@@ -21,20 +21,13 @@ orbs:
             #default: https://api-skat27e9.castles.prismacloud.io/login
         steps:
           - checkout
-          - run: pwd
-          - run: ls
           - run: zip -r repo.zip .
-          - run: ls
-          - echo_command 
         #  - auth:
         #      pc_username: <<parameters.pc_username>>
         #      pc_password: <<parameters.pc_password>>
         #      pc_host: <<parameters.pc_host>>        
           - scan
     commands:
-      echo_command:
-        steps:
-           - run: echo "my custom checkout"
       auth:
         description: API call for authentication. User input will be host, username & password. Response will be the auth token to be passed on in scan command.
         parameters:
@@ -66,16 +59,18 @@ orbs:
                 result="$(echo "$response" | jq -r '.result.is_successful')"
                 matched="$(echo "$response" | jq -r '.result.rules_matched')"
                 stats="$(echo "$response" | jq -r '.result.severity_stats')"
-                echo "result: " $result
-                echo "matched: " $matched
+                # echo "result: " $result
+                # echo "matched: " $matched
                 echo "stats: " $stats
                 mkdir results
-                echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv' 
-                echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/matched.csv
-                echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/matched.csv ; echo "</table>"
-                echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/matched.csv ; echo "</table>">results/results.html
+                # echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv' 
+                echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/scan_results.csv
+                echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
+                echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>" >results/results.html
+                echo "<html>" ; echo "<body>" ; echo "this is my data" ; echo "</body>" ; echo "</html>" >results/demo.html
           - store_artifacts:
-              path: results/results.html
+              path: results/demo.html
+              #path: results/scan_results.csv
     executors:
       default:
         machine: true
