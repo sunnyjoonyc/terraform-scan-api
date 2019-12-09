@@ -90,7 +90,9 @@ orbs:
           - run:
               command: |
                 response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H 'x-redlock-auth:$AUTH_TOKEN' --data-binary @repo.zip)
+                echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
+                echo "result: " $result
                 matched="$(echo "$response" | jq -r '.result.rules_matched')"
                 stats="$(echo "$response" | jq -r '.result.severity_stats')"
                 echo "stats: " $stats
