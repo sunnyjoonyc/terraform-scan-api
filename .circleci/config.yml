@@ -51,6 +51,23 @@ orbs:
                 export AUTH_TOKEN=$token
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
+        parameters:
+          directory_path:
+            description: If the user wants to give any directory path other than current working directory.
+            type: string
+            default: .
+          high_cve:
+            description: High count of vulnerabilities above which the build should fail.
+            type: integer 
+            default: 0
+          medium_cve:
+            description: Medium count of vulnerabilities above which the build should fail.
+            type: integer
+            default: 0
+          low_cve:
+            description: Low count of voluneabilities above which the build should fail.
+            type: integer
+            default: 0   
         steps:
           #- run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$AUTH_TOKEN' -d
           - run:
@@ -76,7 +93,7 @@ orbs:
                      echo "</table>"; 
                    echo "</body>" ; 
                  echo "</html>") >results/results.html
-                 return 1;
+                 exit 1;
           - store_artifacts:
               path: results/results.html
               #path: results/scan_results.csv
