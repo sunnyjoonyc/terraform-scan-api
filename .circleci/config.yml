@@ -93,11 +93,8 @@ orbs:
                 result="$(echo "$response" | jq -r '.result.is_successful')"
                 matched="$(echo "$response" | jq -r '.result.rules_matched')"
                 stats="$(echo "$response" | jq -r '.result.severity_stats')"
-                # echo "result: " $result
-                # echo "matched: " $matched
                 echo "stats: " $stats
                 mkdir results
-                # echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv' 
                 echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/scan_results.csv
                 echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
                 (echo "<html>" ; 
@@ -116,6 +113,7 @@ orbs:
                  if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
                  then
                    echo "The build failed because the vulnerability count crossed the threshold values."
+                   echo "Statastics: " $stats
                    exit 1;
                  fi
                  echo "Build successful. All the vulnerability count parameters are under threshold value."
