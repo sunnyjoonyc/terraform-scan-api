@@ -90,40 +90,6 @@ orbs:
           - run:
               command: |
                 echo "AUTH_TOKEN: " $AUTH_TOKEN
-                response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H 'x-redlock-auth:$AUTH_TOKEN' -F templateFile=@repo.zip)
-                echo "response: " $response
-                result="$(echo "$response" | jq -r '.result.is_successful')"
-                echo "result: " $result
-                matched="$(echo "$response" | jq -r '.result.rules_matched')"
-                stats="$(echo "$response" | jq -r '.result.severity_stats')"
-                echo "stats: " $stats
-                mkdir results
-                echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/scan_results.csv
-                echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
-                (echo "<html>" ; 
-                   echo "<body>" ; 
-                     echo "<table>" ; 
-                       while read INPUT ; 
-                         do 
-                           echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; 
-                         done < results/scan_results.csv ; 
-                     echo "</table>"; 
-                   echo "</body>" ; 
-                 echo "</html>") >results/results.html
-                 high="$(echo "$stats" | jq -r '.high')"
-                 med="$(echo "$stats" | jq -r '.medium')"
-                 low="$(echo "$stats" | jq -r '.low')"
-                 if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
-                 then
-                   echo "The build failed because the vulnerability count crossed the threshold values."
-                   echo "Statastics: " $stats
-                   exit 1;
-                 fi
-                 echo "Build successful. All the vulnerability count parameters are under threshold value."
-                 echo "Statastics: \n" $stats 
-          - store_artifacts:
-              path: results/results.html
-              #path: results/scan_results.csv
     executors:
       default:
         machine: true
