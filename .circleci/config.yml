@@ -86,7 +86,7 @@ orbs:
             type: integer
             default: 0   
         steps:
-          #- run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$AUTH_TOKEN' -d
+          - run: echo "Auth token:" $AUTH_TOKEN
           - run:
               command: |
                 echo "AUTH_TOKEN: " $AUTH_TOKEN
@@ -113,11 +113,14 @@ orbs:
                  high="$(echo "$stats" | jq -r '.high')"
                  med="$(echo "$stats" | jq -r '.medium')"
                  low="$(echo "$stats" | jq -r '.low')"
-                 if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
+                 if [[ $matches != "" ]]
                  then
-                   echo "The build failed because the vulnerability count crossed the threshold values."
-                   echo "Statastics: " $stats
-                   exit 1;
+                   if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
+                   then
+                     echo "The build failed because the vulnerability count crossed the threshold values."
+                     echo "Statastics: " $stats
+                     exit 1;
+                   fi
                  fi
                  echo "Build successful. All the vulnerability count parameters are under threshold value."
                  echo "Statastics: \n" $stats
