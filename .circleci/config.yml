@@ -19,14 +19,34 @@ orbs:
             description: host url for getting the token
             type: string
             #default: https://api-skat27e9.castles.prismacloud.io/login
+          directory_path:
+            description: If the user wants to give any directory path other than current working directory.
+            type: string
+            default: .
+          high_cve:
+            description: High count of vulnerabilities above which the build should fail.
+            type: integer
+            default: 0
+          medium_cve:
+            description: Medium count of vulnerabilities above which the build should fail.
+            type: integer
+            default: 0
+          low_cve:
+            description: Low count of voluneabilities above which the build should fail.
+            type: integer
+            default: 0
         steps:
           - checkout
           - run: zip -r repo.zip .
-        #  - auth:
-        #      pc_username: <<parameters.pc_username>>
-        #      pc_password: <<parameters.pc_password>>
-        #      pc_host: <<parameters.pc_host>>        
-          - scan
+          - auth:
+              pc_username: <<parameters.pc_username>>
+              pc_password: <<parameters.pc_password>>
+              pc_host: <<parameters.pc_host>>        
+          - scan:
+              directory_path: <<parameters.directory_path>>
+              high_cve: <<parameters.high_cve>>
+              medium_cve: <<parameters.medium_cve>>
+              low_cve: <<parameters.low_cve>>
     commands:
       auth:
         description: API call for authentication. User input will be host, username & password. Response will be the auth token to be passed on in scan command.
@@ -34,15 +54,12 @@ orbs:
           pc_username:
             description: Username for authnetication
             type: string
-            #default: techops+provision@redlock.io
           pc_password:
             description: User password for authentication
             type: string
-            #default: iYS2ZjfKHyQcQpIg55RP
           pc_host:
             description: host url for getting the token
             type: string          
-            #default: https://api-skat27e9.castles.prismacloud.io/login
         steps:
           - run: 
               command: |
@@ -72,7 +89,7 @@ orbs:
           #- run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$AUTH_TOKEN' -d
           - run:
               command: |
-                response=$(curl -X POST https://scanapi.redlock.io/v1/iac --data-binary @repo.zip)
+                response=$(curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$AUTH_TOKEN' --data-binary @repo.zip)
                 result="$(echo "$response" | jq -r '.result.is_successful')"
                 matched="$(echo "$response" | jq -r '.result.rules_matched')"
                 stats="$(echo "$response" | jq -r '.result.severity_stats')"
@@ -93,7 +110,15 @@ orbs:
                      echo "</table>"; 
                    echo "</body>" ; 
                  echo "</html>") >results/results.html
-                 exit 1;
+                 high="$(echo "$stats" | jq -r '.high')"
+                 med="$(echo "$stats" | jq -r '.medium')"
+                 low="$(echo "$stats" | jq -r '.low')"
+                 if [["$high" -ge <<parameters.high_cve>> or "$medium" -ge <<parameters.medium_cve>> or "$low" -ge <<parameters.low_cve>>]] ;then
+                   echo "The build failed because the vulnerability count crossed the threshold values."
+                   exit 1;
+                 fi
+                 echo "Build successful. All the vulnerability count parameters are under threshold value."
+                 echo "Statastics: \n" $stats 
           - store_artifacts:
               path: results/results.html
               #path: results/scan_results.csv
