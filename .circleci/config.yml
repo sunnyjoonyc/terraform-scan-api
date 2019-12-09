@@ -65,9 +65,7 @@ orbs:
               command: |
                 token=$(curl -X POST <<parameters.pc_host>> -H 'Content-Type:application/json' -d '{"username":"<<parameters.pc_username>>", "password":"<<parameters.pc_password>>"}'|jq .token| tr -d '"') 
                 echo "token: " $token
-                export AUTH_TOKEN=$token
-                export <<parameters.pc_password>>=$token
-                echo "password: " <<parameters.pc_password>>
+                echo 'export AUTH_TOKEN=$token'
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         parameters:
