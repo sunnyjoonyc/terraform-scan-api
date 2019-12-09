@@ -76,6 +76,7 @@ orbs:
                      echo "</table>"; 
                    echo "</body>" ; 
                  echo "</html>") >results/results.html
+                 return 1;
           - store_artifacts:
               path: results/results.html
               #path: results/scan_results.csv
