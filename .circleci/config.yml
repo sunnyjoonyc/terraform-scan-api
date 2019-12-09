@@ -113,7 +113,8 @@ orbs:
                  high="$(echo "$stats" | jq -r '.high')"
                  med="$(echo "$stats" | jq -r '.medium')"
                  low="$(echo "$stats" | jq -r '.low')"
-                 if [["$high" -ge <<parameters.high_cve>> or "$medium" -ge <<parameters.medium_cve>> or "$low" -ge <<parameters.low_cve>>]] ;then
+                 if ["$high" -ge <<parameters.high_cve>>] || ["$medium" -ge <<parameters.medium_cve>>] || ["$low" -ge <<parameters.low_cve>>]
+                 then
                    echo "The build failed because the vulnerability count crossed the threshold values."
                    exit 1;
                  fi
