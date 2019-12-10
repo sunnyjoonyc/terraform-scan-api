@@ -98,7 +98,7 @@ orbs:
           - run:
               command: |
                 source $BASH_ENV
-                echo "AUTH_TOKEN: " ${AUTH_TOKEN}
+                #echo "AUTH_TOKEN: " ${AUTH_TOKEN}
                 SCAN_PATH=<<parameters.directory_path>>
                 if [[ -f <<parameters.directory_path>> ]]
                 then
@@ -114,18 +114,18 @@ orbs:
                   response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
                 fi
 
-                echo "response: " $response
+                #echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
-                echo "result: " $result
+                #echo "result: " $result
 
                 if [[ $result ]]
                 then
                   matched="$(echo "$response" | jq -r '.result.rules_matched')"
-                  echo "matched: " $matched
+                  #echo "matched: " $matched
                   if [[ $matched != null ]]
                   then
                     stats="$(echo "$response" | jq -r '.result.severity_stats')"
-                    echo "stats: " $stats
+                    #echo "stats: " $stats
                     mkdir results
                     echo $matched | jq -r '(["SEVERITY","NAME","FILES"] | (., map(length*"-"))), (.[] | [.severity, .name, .files[0]]) |@tsv'> results/scan_results.csv
                     head -n 1 results/scan_results.csv > results/scan.csv && tail -n +2 results/scan_results.csv | sort -t "|" -k 1 >> results/scan.csv
@@ -154,7 +154,7 @@ orbs:
                      fi
                   fi
                   echo "Build successful. All the vulnerability count parameters are under threshold value."
-                  echo "Statastics: \n" $stats
+                  echo "Statastics: " $stats
                 else
                   echo "$(echo "$response" | jq -r '.result.is_successful')"
                 fi  
