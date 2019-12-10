@@ -37,7 +37,7 @@ orbs:
             default: 0
         steps:
           - checkout
-          - run: zip -r repo.zip . -x "*.*"
+          - run: zip -r repo.zip . -x ".*"
           - auth:
               pc_username: <<parameters.pc_username>>
               pc_password: <<parameters.pc_password>>
