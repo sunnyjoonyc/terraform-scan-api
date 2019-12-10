@@ -89,10 +89,8 @@ orbs:
           - run:
               command: |
                 source $BASH_ENV
-                cat $BASH_ENV
                 echo "AUTH_TOKEN: " ${AUTH_TOKEN}
-                echo "AUTH_TOKEN: " $AUTH_TOKEN
-                response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H 'x-redlock-auth:${AUTH_TOKEN}' -F templateFile=@repo.zip)
+                response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
                 echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
                 echo "result: " $result
