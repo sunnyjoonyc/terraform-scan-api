@@ -41,7 +41,7 @@ orbs:
             default: 0
         steps:
           - checkout
-          - run: zip -r repo.zip . -x ".*"
+          #- run: zip -r repo.zip . -x ".*"
           - auth:
               pc_username: <<parameters.pc_username>>
               pc_password: <<parameters.pc_password>>
@@ -99,6 +99,7 @@ orbs:
               command: |
                 source $BASH_ENV
                 echo "AUTH_TOKEN: " ${AUTH_TOKEN}
+                zip -r repo.zip <<parameters.directory_path>> -x ".*"
                 if [[ variable_file_names != "" ]]
                 then
                   response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -H 'rl-variable-file-names: [<<parameters.variable_file_names>>]' -F templateFile=@repo.zip)
