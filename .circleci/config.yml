@@ -152,12 +152,13 @@ orbs:
                        echo "Statastics: " $stats
                        exit 1;
                      fi
+                     echo "Build successful. All the vulnerability count parameters are under threshold value."
+                     echo "Statastics: " $stats
                   fi
-                  echo "Build successful. All the vulnerability count parameters are under threshold value."
-                  echo "Statastics: " $stats
+                  echo "Build successful. No vulneravilities found."
                 else
                   echo "$(echo "$response" | jq -r '.result.is_successful')"
-                  $(echo "$response" | jq -r '.result.is_successful') > results/scan.csv
+                  echo "$(echo "$response" | jq -r '.result.is_successful')" > results/scan.csv
                 fi  
           - store_artifacts:
               path: results/scan.csv
