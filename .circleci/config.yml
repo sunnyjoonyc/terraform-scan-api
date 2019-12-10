@@ -99,6 +99,12 @@ orbs:
               command: |
                 source $BASH_ENV
                 echo "AUTH_TOKEN: " ${AUTH_TOKEN}
+                if [[ -f <<parameters.directory_path>> ]]
+                then
+                  mkdir scan;
+                  cp <<parameters.directory_path>> scan/
+                  parameters.directory_path = scan/
+                fi
                 zip -r repo.zip <<parameters.directory_path>> -x ".*"
                 if [[ variable_file_names != "" ]]
                 then
