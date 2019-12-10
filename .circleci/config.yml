@@ -113,9 +113,11 @@ orbs:
                 else
                   response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
                 fi
+
                 echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
                 echo "result: " $result
+
                 if [[ $result ]]
                 then
                   matched="$(echo "$response" | jq -r '.result.rules_matched')"
@@ -151,6 +153,8 @@ orbs:
                    fi
                    echo "Build successful. All the vulnerability count parameters are under threshold value."
                    echo "Statastics: \n" $stats
+                else
+                  echo "$(echo "$response" | jq -r '.result.is_successful')"
                 fi  
           - store_artifacts:
               path: results/scan.csv
