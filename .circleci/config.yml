@@ -114,8 +114,8 @@ orbs:
                   stats="$(echo "$response" | jq -r '.result.severity_stats')"
                   echo "stats: " $stats
                   mkdir results
-                  echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/scan_results.csv
-                  sort --field-separator=',' -n -k 3,3 results/scan_results.csv
+                  echo $matched | jq -r '(["SEVERITY","NAME","FILES"] | (., map(length*"-"))), (.[] | [.severity, .name, .files[0]]) |@tsv'> results/scan_results.csv
+                  sort --field-separator=',' -n -k1 results/scan_results.csv
 
                   echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
                   (echo "<html>" ;
