@@ -157,6 +157,7 @@ orbs:
                   echo "Statastics: " $stats
                 else
                   echo "$(echo "$response" | jq -r '.result.is_successful')"
+                  $(echo "$response" | jq -r '.result.is_successful') > results/scan.csv
                 fi  
           - store_artifacts:
               path: results/scan.csv
