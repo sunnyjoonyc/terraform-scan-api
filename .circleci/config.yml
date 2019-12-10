@@ -66,7 +66,6 @@ orbs:
                 token=$(curl -X POST <<parameters.pc_host>> -H 'Content-Type:application/json' -d '{"username":"<<parameters.pc_username>>", "password":"<<parameters.pc_password>>"}'|jq .token| tr -d '"') 
                 echo "token: " $token
                 echo 'export AUTH_TOKEN=$token' >> $BASH_ENV
-                echo "AUTH_TOKEN: " $AUTH_TOKEN
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         parameters:
@@ -92,7 +91,7 @@ orbs:
           - run:
               command: |
                 source $BASH_ENV
-                echo "AUTH_TOKEN: " $AUTH_TOKEN
+                echo "AUTH_TOKEN: " ${AUTH_TOKEN}
                 response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H 'x-redlock-auth:$AUTH_TOKEN' -F templateFile=@repo.zip)
                 echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
