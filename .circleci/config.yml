@@ -104,7 +104,7 @@ orbs:
                 then
                   mkdir scan;
                   cp <<parameters.directory_path>> scan/
-                  SCAN_PATH = scan/
+                  SCAN_PATH=scan/
                 fi
                 zip -r repo.zip $SCAN_PATH -x ".*"
                 if [[ variable_file_names != "" ]]
