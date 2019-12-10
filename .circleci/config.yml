@@ -158,4 +158,4 @@ workflows:
           pc_username: techops+provision@redlock.io
           pc_password: LjXgyP11CsjeF86ZAVps 
           pc_host: https://api-kratcce2.castles.prismacloud.io/login
-          directory_path: ./demo
+          directory_path: ./demo/eks.tf.json
