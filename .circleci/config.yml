@@ -41,7 +41,7 @@ orbs:
             default: 0
         steps:
           - checkout
-          - run: zip -r repo.zip . -x ".*"
+          #- run: zip -r repo.zip . -x ".*"
           - auth:
               pc_username: <<parameters.pc_username>>
               pc_password: <<parameters.pc_password>>
@@ -98,52 +98,69 @@ orbs:
           - run:
               command: |
                 source $BASH_ENV
-                echo "AUTH_TOKEN: " ${AUTH_TOKEN}
+                #echo "AUTH_TOKEN: " ${AUTH_TOKEN}
+                SCAN_PATH=<<parameters.directory_path>>
+                if [[ -f <<parameters.directory_path>> ]]
+                then
+                  mkdir scan;
+                  cp <<parameters.directory_path>> scan/
+                  SCAN_PATH=scan/
+                fi
+                zip -r repo.zip $SCAN_PATH -x ".*"
                 if [[ variable_file_names != "" ]]
                 then
                   response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -H 'rl-variable-file-names: [<<parameters.variable_file_names>>]' -F templateFile=@repo.zip)
                 else
                   response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
                 fi
-                echo "response: " $response
+
+                #echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
-                echo "result: " $result
+                #echo "result: " $result
+
                 if [[ $result ]]
                 then
                   matched="$(echo "$response" | jq -r '.result.rules_matched')"
-                  stats="$(echo "$response" | jq -r '.result.severity_stats')"
-                  echo "stats: " $stats
-                  mkdir results
-                  echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/scan_results.csv
-                  sort --field-separator=','  -n -k 3,3 -k 1,1 -k 2,2 results/scan_results.csv
-                  echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
-                  (echo "<html>" ;
-                     echo "<body>" ;
-                       echo "<table>" ;
-                         while read INPUT ;
-                           do
-                             echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ;
-                           done < results/scan_results.csv ;
-                       echo "</table>";
-                     echo "</body>" ;
-                   echo "</html>") >results/results.html
-                   high="$(echo "$stats" | jq -r '.high')"
-                   med="$(echo "$stats" | jq -r '.medium')"
-                   low="$(echo "$stats" | jq -r '.low')"
-                   if [[ $matched != "" ]]
-                   then
+                  #echo "matched: " $matched
+                  if [[ $matched != null ]]
+                  then
+                    stats="$(echo "$response" | jq -r '.result.severity_stats')"
+                    #echo "stats: " $stats
+                    mkdir results
+                    echo $matched | jq -r '(["SEVERITY","NAME","FILES"] | (., map(length*"-"))), (.[] | [.severity, .name, .files[0]]) |@tsv'> results/scan_results.csv
+                    head -n 1 results/scan_results.csv > results/scan.csv && tail -n +2 results/scan_results.csv | sort -t "|" -k 1 >> results/scan.csv
+                    #cat results/scan.csv | sed 's/,/ ,/g' | column -t -s, | less -S
+                    #cat results/scan.csv | column -t -s, | less -S
+                    echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
+                    (echo "<html>" ;
+                       echo "<body>" ;
+                         echo "<table>" ;
+                           while read INPUT ;
+                             do
+                               echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ;
+                             done < results/scan_results.csv ;
+                         echo "</table>";
+                       echo "</body>" ;
+                     echo "</html>") >results/results.html
+                     high="$(echo "$stats" | jq -r '.high')"
+                     med="$(echo "$stats" | jq -r '.medium')"
+                     low="$(echo "$stats" | jq -r '.low')"
+       
                      if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
                      then
                        echo "The build failed because the vulnerability count crossed the threshold values."
                        echo "Statastics: " $stats
                        exit 1;
                      fi
-                   fi
-                   echo "Build successful. All the vulnerability count parameters are under threshold value."
-                   echo "Statastics: \n" $stats
+                  fi
+                  echo "Build successful. All the vulnerability count parameters are under threshold value."
+                  echo "Statastics: " $stats
+                else
+                  echo "$(echo "$response" | jq -r '.result.is_successful')"
+                  $(echo "$response" | jq -r '.result.is_successful') > results/scan.csv
                 fi  
           - store_artifacts:
-              path: results/scans.csv
+              path: results/scan.csv
     executors:
       default:
         machine: true
@@ -155,4 +172,4 @@ workflows:
           pc_username: techops+provision@redlock.io
           pc_password: LjXgyP11CsjeF86ZAVps 
           pc_host: https://api-kratcce2.castles.prismacloud.io/login
-
+          directory_path: ./demo/eks.tf.json
