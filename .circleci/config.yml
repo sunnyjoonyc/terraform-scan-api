@@ -19,6 +19,10 @@ orbs:
             description: host url for getting the token
             type: string
             #default: https://api-skat27e9.castles.prismacloud.io/login
+          variable_file_names:
+            description: Take the custom variable file names from the user. This is a comma separated list.
+            type: string
+            default: ""
           directory_path:
             description: If the user wants to give any directory path other than current working directory.
             type: string
@@ -37,12 +41,13 @@ orbs:
             default: 0
         steps:
           - checkout
-          - run: zip -r repo.zip .
+          - run: zip -r repo.zip . -x ".*"
           - auth:
               pc_username: <<parameters.pc_username>>
               pc_password: <<parameters.pc_password>>
               pc_host: <<parameters.pc_host>>        
           - scan:
+              variable_file_names: <<parameters.variable_file_names>>
               directory_path: <<parameters.directory_path>>
               high_cve: <<parameters.high_cve>>
               medium_cve: <<parameters.medium_cve>>
@@ -65,10 +70,14 @@ orbs:
               command: |
                 token=$(curl -X POST <<parameters.pc_host>> -H 'Content-Type:application/json' -d '{"username":"<<parameters.pc_username>>", "password":"<<parameters.pc_password>>"}'|jq .token| tr -d '"') 
                 echo "token: " $token
-                echo 'export AUTH_TOKEN=$token' >> $BASH_ENV
+                echo "export AUTH_TOKEN=${token}" >> $BASH_ENV
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         parameters:
+          variable_file_names:
+            description: Take the custom variable file names from the user. This is a comma separated list.
+            type: string
+            default: ""
           directory_path:
             description: If the user wants to give any directory path other than current working directory.
             type: string
@@ -86,47 +95,55 @@ orbs:
             type: integer
             default: 0   
         steps:
-          - run: echo "Auth token:" $AUTH_TOKEN
           - run:
               command: |
-                echo "AUTH_TOKEN: " $AUTH_TOKEN
-                response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H 'x-redlock-auth:$AUTH_TOKEN' -F templateFile=@repo.zip)
+                source $BASH_ENV
+                echo "AUTH_TOKEN: " ${AUTH_TOKEN}
+                if [[ variable_file_names != "" ]]
+                then
+                  response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -H 'rl-variable-file-names: [<<parameters.variable_file_names>>]' -F templateFile=@repo.zip)
+                else
+                  response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
+                fi
                 echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
                 echo "result: " $result
-                matched="$(echo "$response" | jq -r '.result.rules_matched')"
-                stats="$(echo "$response" | jq -r '.result.severity_stats')"
-                echo "stats: " $stats
-                mkdir results
-                echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/scan_results.csv
-                echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
-                (echo "<html>" ;
-                   echo "<body>" ;
-                     echo "<table>" ;
-                       while read INPUT ;
-                         do
-                           echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ;
-                         done < results/scan_results.csv ;
-                     echo "</table>";
-                   echo "</body>" ;
-                 echo "</html>") >results/results.html
-                 high="$(echo "$stats" | jq -r '.high')"
-                 med="$(echo "$stats" | jq -r '.medium')"
-                 low="$(echo "$stats" | jq -r '.low')"
-                 if [[ $matched != "" ]]
-                 then
-                   if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
+                if [[ $result ]]
+                then
+                  matched="$(echo "$response" | jq -r '.result.rules_matched')"
+                  stats="$(echo "$response" | jq -r '.result.severity_stats')"
+                  echo "stats: " $stats
+                  mkdir results
+                  echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/scan_results.csv
+                  sort --field-separator=','  -n -k 3,3 -k 1,1 -k 2,2 results/scan_results.csv
+                  echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
+                  (echo "<html>" ;
+                     echo "<body>" ;
+                       echo "<table>" ;
+                         while read INPUT ;
+                           do
+                             echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ;
+                           done < results/scan_results.csv ;
+                       echo "</table>";
+                     echo "</body>" ;
+                   echo "</html>") >results/results.html
+                   high="$(echo "$stats" | jq -r '.high')"
+                   med="$(echo "$stats" | jq -r '.medium')"
+                   low="$(echo "$stats" | jq -r '.low')"
+                   if [[ $matched != "" ]]
                    then
-                     echo "The build failed because the vulnerability count crossed the threshold values."
-                     echo "Statastics: " $stats
-                     exit 1;
+                     if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
+                     then
+                       echo "The build failed because the vulnerability count crossed the threshold values."
+                       echo "Statastics: " $stats
+                       exit 1;
+                     fi
                    fi
-                 fi
-                 echo "Build successful. All the vulnerability count parameters are under threshold value."
-                 echo "Statastics: \n" $stats
+                   echo "Build successful. All the vulnerability count parameters are under threshold value."
+                   echo "Statastics: \n" $stats
+                fi  
           - store_artifacts:
-              path: results/results.html
-              #path: results/scan_results.csv
+              path: results/scans.csv
     executors:
       default:
         machine: true
