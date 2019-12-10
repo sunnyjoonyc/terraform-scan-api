@@ -19,6 +19,10 @@ orbs:
             description: host url for getting the token
             type: string
             #default: https://api-skat27e9.castles.prismacloud.io/login
+          variable_file_names:
+            description: Take the custom variable file names from the user. This is a comma separated list.
+            type: string
+            default: ""
           directory_path:
             description: If the user wants to give any directory path other than current working directory.
             type: string
@@ -43,6 +47,7 @@ orbs:
               pc_password: <<parameters.pc_password>>
               pc_host: <<parameters.pc_host>>        
           - scan:
+              variable_file_names: <<parameters.variable_file_names>>
               directory_path: <<parameters.directory_path>>
               high_cve: <<parameters.high_cve>>
               medium_cve: <<parameters.medium_cve>>
@@ -69,6 +74,10 @@ orbs:
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         parameters:
+          variable_file_names:
+            description: Take the custom variable file names from the user. This is a comma separated list.
+            type: string
+            default: ""
           directory_path:
             description: If the user wants to give any directory path other than current working directory.
             type: string
@@ -90,7 +99,12 @@ orbs:
               command: |
                 source $BASH_ENV
                 echo "AUTH_TOKEN: " ${AUTH_TOKEN}
-                response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
+                if [[ variable_file_names != "" ]]
+                then
+                  response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -H 'rl-variable-file-names: [<<parameters.variable_file_names>>]' -F templateFile=@repo.zip)
+                else
+                  response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
+                fi
                 echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
                 echo "result: " $result
