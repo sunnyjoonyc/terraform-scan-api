@@ -99,13 +99,14 @@ orbs:
               command: |
                 source $BASH_ENV
                 echo "AUTH_TOKEN: " ${AUTH_TOKEN}
+                SCAN_PATH=<<parameters.directory_path>>
                 if [[ -f <<parameters.directory_path>> ]]
                 then
                   mkdir scan;
                   cp <<parameters.directory_path>> scan/
-                  parameters.directory_path = scan/
+                  SCAN_PATH = scan/
                 fi
-                zip -r repo.zip <<parameters.directory_path>> -x ".*"
+                zip -r repo.zip $SCAN_PATH -x ".*"
                 if [[ variable_file_names != "" ]]
                 then
                   response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -H 'rl-variable-file-names: [<<parameters.variable_file_names>>]' -F templateFile=@repo.zip)
