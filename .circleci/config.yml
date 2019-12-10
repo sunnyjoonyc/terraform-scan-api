@@ -65,7 +65,7 @@ orbs:
               command: |
                 token=$(curl -X POST <<parameters.pc_host>> -H 'Content-Type:application/json' -d '{"username":"<<parameters.pc_username>>", "password":"<<parameters.pc_password>>"}'|jq .token| tr -d '"') 
                 echo "token: " $token
-                echo 'export AUTH_TOKEN=$token'
+                echo 'export AUTH_TOKEN=$token' >> $BASH_ENV
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         parameters:
@@ -86,10 +86,47 @@ orbs:
             type: integer
             default: 0   
         steps:
-          #- run: curl -X POST https://scanapi.redlock.io/v1/iac --output ~/demo1.txt curl -X POST https://api-skat27e9.castles.prismacloud.io/prisma_scan -H 'x-redlock-auth:$AUTH_TOKEN' -d
+          - run: echo "Auth token:" $AUTH_TOKEN
           - run:
               command: |
                 echo "AUTH_TOKEN: " $AUTH_TOKEN
+                response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H 'x-redlock-auth:$AUTH_TOKEN' -F templateFile=@repo.zip)
+                echo "response: " $response
+                result="$(echo "$response" | jq -r '.result.is_successful')"
+                echo "result: " $result
+                matched="$(echo "$response" | jq -r '.result.rules_matched')"
+                stats="$(echo "$response" | jq -r '.result.severity_stats')"
+                echo "stats: " $stats
+                mkdir results
+                echo $matched | jq -r '(["FILES","NAME","SEVERITY"] | (., map(length*"-"))), (.[] | [.files[0], .name, .severity]) |@tsv'> results/scan_results.csv
+                echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
+                (echo "<html>" ;
+                   echo "<body>" ;
+                     echo "<table>" ;
+                       while read INPUT ;
+                         do
+                           echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ;
+                         done < results/scan_results.csv ;
+                     echo "</table>";
+                   echo "</body>" ;
+                 echo "</html>") >results/results.html
+                 high="$(echo "$stats" | jq -r '.high')"
+                 med="$(echo "$stats" | jq -r '.medium')"
+                 low="$(echo "$stats" | jq -r '.low')"
+                 if [[ $matched != "" ]]
+                 then
+                   if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
+                   then
+                     echo "The build failed because the vulnerability count crossed the threshold values."
+                     echo "Statastics: " $stats
+                     exit 1;
+                   fi
+                 fi
+                 echo "Build successful. All the vulnerability count parameters are under threshold value."
+                 echo "Statastics: \n" $stats
+          - store_artifacts:
+              path: results/results.html
+              #path: results/scan_results.csv
     executors:
       default:
         machine: true
