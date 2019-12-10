@@ -115,8 +115,8 @@ orbs:
                   echo "stats: " $stats
                   mkdir results
                   echo $matched | jq -r '(["SEVERITY","NAME","FILES"] | (., map(length*"-"))), (.[] | [.severity, .name, .files[0]]) |@tsv'> results/scan_results.csv
-                  sort --field-separator=',' -n -k1,1 results/scan_results.csv>results/scan.csv
-
+                  #sort --field-separator=',' -n -k1,1 results/scan_results.csv>results/scan.csv
+                  head -n 1 results/scan_results.csv > results/scan.csv && tail -n +2 results/scan_results.csv | sort -t "|" -k 1 >> results/scan.csv
                   echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
                   (echo "<html>" ;
                      echo "<body>" ;
