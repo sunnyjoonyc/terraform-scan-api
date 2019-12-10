@@ -121,7 +121,8 @@ orbs:
                 if [[ $result ]]
                 then
                   matched="$(echo "$response" | jq -r '.result.rules_matched')"
-                  if [[ $matched != "" ]]
+                  echo "matched: " $matched
+                  if [[ $matched != null ]]
                   then
                     stats="$(echo "$response" | jq -r '.result.severity_stats')"
                     echo "stats: " $stats
@@ -151,9 +152,9 @@ orbs:
                        echo "Statastics: " $stats
                        exit 1;
                      fi
-                   fi
-                   echo "Build successful. All the vulnerability count parameters are under threshold value."
-                   echo "Statastics: \n" $stats
+                  fi
+                  echo "Build successful. All the vulnerability count parameters are under threshold value."
+                  echo "Statastics: \n" $stats
                 else
                   echo "$(echo "$response" | jq -r '.result.is_successful')"
                 fi  
