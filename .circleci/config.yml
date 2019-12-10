@@ -126,7 +126,6 @@ orbs:
                  echo "Statastics: \n" $stats
           - store_artifacts:
               path: results/results.html
-              #path: results/scan_results.csv
     executors:
       default:
         machine: true
