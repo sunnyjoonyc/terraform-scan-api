@@ -121,6 +121,8 @@ orbs:
                 if [[ $result ]]
                 then
                   matched="$(echo "$response" | jq -r '.result.rules_matched')"
+                 if [[ $matched != "" ]]
+                 then
                   stats="$(echo "$response" | jq -r '.result.severity_stats')"
                   echo "stats: " $stats
                   mkdir results
@@ -142,20 +144,19 @@ orbs:
                    high="$(echo "$stats" | jq -r '.high')"
                    med="$(echo "$stats" | jq -r '.medium')"
                    low="$(echo "$stats" | jq -r '.low')"
-                   if [[ $matched != "" ]]
+       
+                   if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
                    then
-                     if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
-                     then
-                       echo "The build failed because the vulnerability count crossed the threshold values."
-                       echo "Statastics: " $stats
-                       exit 1;
-                     fi
+                     echo "The build failed because the vulnerability count crossed the threshold values."
+                     echo "Statastics: " $stats
+                     exit 1;
                    fi
-                   echo "Build successful. All the vulnerability count parameters are under threshold value."
-                   echo "Statastics: \n" $stats
-                else
-                  echo "$(echo "$response" | jq -r '.result.is_successful')"
-                fi  
+                 fi
+                 echo "Build successful. All the vulnerability count parameters are under threshold value."
+                 echo "Statastics: \n" $stats
+              else
+                echo "$(echo "$response" | jq -r '.result.is_successful')"
+              fi  
           - store_artifacts:
               path: results/scan.csv
     executors:
