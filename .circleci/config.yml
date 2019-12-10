@@ -37,7 +37,7 @@ orbs:
             default: 0
         steps:
           - checkout
-          - run: zip -r repo.zip . -x .*
+          - run: zip -r repo.zip . -x "*/\.*"
           - auth:
               pc_username: <<parameters.pc_username>>
               pc_password: <<parameters.pc_password>>
@@ -94,7 +94,7 @@ orbs:
                 echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
                 echo "result: " $result
-                if [[ $result=="success" ]]
+                if [[ $result==true ]]
                 then
                   matched="$(echo "$response" | jq -r '.result.rules_matched')"
                   stats="$(echo "$response" | jq -r '.result.severity_stats')"
