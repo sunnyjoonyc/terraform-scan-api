@@ -3,8 +3,10 @@ description: 'This is an inline job'
 
 orbs:
   scan_image:
+    orbs:
+      twistcli: twistlock/twistcli-scan@1.0.5
     jobs:
-      scan_job:
+      iac_scan_job:
         executor: default
         parameters:
           pc_username:
@@ -52,6 +54,64 @@ orbs:
               high_cve: <<parameters.high_cve>>
               medium_cve: <<parameters.medium_cve>>
               low_cve: <<parameters.low_cve>>
+      twistlock_job:
+        executor: twistcli/default
+        parameters:
+          tl_user:
+            description: The Twistlock Console user with the CI User role
+            type: string
+            default: $TL_USER
+          tl_pass:
+            description: The Twistlock Console user's password
+            type: env_var_name
+            default: TL_PASS
+          tl_console_url:
+            description: The base URL for the console -- http://console.<my_company>.com:8083 -- without a trailing /
+            type: string
+            default: $TL_CONSOLE_URL
+          pc_username:
+            description: Username for authnetication
+            type: string
+          pc_password:
+            description: User password for authentication
+            type: string
+          pc_host:
+            description: host url for getting the token
+            type: string
+          vuln-thresh:
+            description: Sets the minimum vulnerability severity that returns a fail exit code. Supported values are low, medium, high, and critical 
+            type: string
+            default: ''
+          comp-thresh:
+            description: Sets the minimum compliance issue severity that returns a fail exit code. Supported values are low, medium, high, and critical 
+            type: string
+            default: ''
+          only-fixed:
+            description: Whether to only report vulnerabilities with fixes available
+            type: boolean
+            default: false 
+          workspace-name:
+            description: Name of workspace to docker save the image-tar into so it can be scanned by orb
+            type: string
+            default: workspace 
+          image-tar:
+            description: The name of the image tar file stored in the workspace -- defaults to image.tar
+            type: string
+            default: image.tar
+          image:
+            description: The name of the image to scan -- myimage or myorg/myimage or myorg/myimage:latest
+            type: string
+        steps: 
+          - twistcli/scan-image:
+                tl_user: <<parameters.tl_user>>
+                tl_pass: <<parameters.tl_pass>>
+                tl_console_url: <<paramteres.tl_console_url>>
+                image: <<parameters.image>>
+                image-tar: <<parameters.image-tar>>
+                vuln-thresh: <<parameters.vuln-thresh>>
+                comp-thresh: <<parameters.comp-thresh>>
+                only-fixed: <<parameters.only-fixed>>
+            
     commands:
       auth:
         description: API call for authentication. User input will be host, username & password. Response will be the auth token to be passed on in scan command.
@@ -68,7 +128,7 @@ orbs:
         steps:
           - run: 
               command: |
-                token=$(curl -X POST <<parameters.pc_host>> -H 'Content-Type:application/json' -d '{"username":"<<parameters.pc_username>>", "password":"<<parameters.pc_password>>"}'|jq .token| tr -d '"') 
+                token=$(curl -X POST <<parameters.pc_host>>/login -H 'Content-Type:application/json' -d '{"username":"<<parameters.pc_username>>", "password":"<<parameters.pc_password>>"}'|jq .token| tr -d '"') 
                 echo "token: " $token
                 echo "export AUTH_TOKEN=${token}" >> $BASH_ENV
       scan:
@@ -169,8 +229,8 @@ orbs:
 workflows:  
   build-test-deploy:
     jobs:
-      - scan_image/scan_job:
+      - scan_image/iac_scan_job:
           pc_username: techops+provision@redlock.io
           pc_password: LjXgyP11CsjeF86ZAVps 
-          pc_host: https://api-kratcce2.castles.prismacloud.io/login
+          pc_host: https://api-kratcce2.castles.prismacloud.io
           directory_path: ./demo/eks.tf.json
