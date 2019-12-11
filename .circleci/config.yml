@@ -159,8 +159,6 @@ orbs:
           - run:
               command: |
                 source $BASH_ENV
-                vi "$BASH_ENV"
-                #echo "AUTH_TOKEN: " ${AUTH_TOKEN}
                 echo "PC_HOST: " ${PC_HOST}
                 SCAN_PATH=<<parameters.directory_path>>
                 if [[ -f <<parameters.directory_path>> ]]
