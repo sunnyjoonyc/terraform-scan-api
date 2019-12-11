@@ -159,7 +159,6 @@ orbs:
           - run:
               command: |
                 source $BASH_ENV
-                echo "PC_HOST: " ${PC_HOST}
                 SCAN_PATH=<<parameters.directory_path>>
                 if [[ -f <<parameters.directory_path>> ]]
                 then
@@ -178,6 +177,7 @@ orbs:
                 #echo "response: " $response
                 result="$(echo "$response" | jq -r '.result.is_successful')"
                 #echo "result: " $result
+                mkdir results
 
                 if [[ $result ]]
                 then
@@ -187,7 +187,6 @@ orbs:
                   then
                     stats="$(echo "$response" | jq -r '.result.severity_stats')"
                     #echo "stats: " $stats
-                    mkdir results
                     echo $matched | jq -r '(["SEVERITY","NAME","FILES"] | (., map(length*"-"))), (.[] | [.severity, .name, .files[0]]) |@tsv'> results/scan_results.csv
                     head -n 1 results/scan_results.csv > results/scan.csv && tail -n +2 results/scan_results.csv | sort -t "|" -k 1 >> results/scan.csv
                     #cat results/scan.csv | sed 's/,/ ,/g' | column -t -s, | less -S
