@@ -159,8 +159,9 @@ orbs:
           - run:
               command: |
                 source $BASH_ENV
-                vi $BASH_ENV
+                vi "$BASH_ENV"
                 #echo "AUTH_TOKEN: " ${AUTH_TOKEN}
+                echo "PC_HOST: " ${PC_HOST}
                 SCAN_PATH=<<parameters.directory_path>>
                 if [[ -f <<parameters.directory_path>> ]]
                 then
@@ -171,9 +172,9 @@ orbs:
                 zip -r repo.zip $SCAN_PATH -x ".*"
                 if [[ variable_file_names != "" ]]
                 then
-                  response=$(curl -X POST PC_HOST/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -H 'rl-variable-file-names: [<<parameters.variable_file_names>>]' -F templateFile=@repo.zip)
+                  response=$(curl -X POST "$PC_HOST"/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -H 'rl-variable-file-names: [<<parameters.variable_file_names>>]' -F templateFile=@repo.zip)
                 else
-                  response=$(curl -X POST PC_HOST/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
+                  response=$(curl -X POST $"PC_HOST"/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
                 fi
 
                 #echo "response: " $response
