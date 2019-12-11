@@ -131,6 +131,7 @@ orbs:
                 token=$(curl -X POST <<parameters.pc_host>>/login -H 'Content-Type:application/json' -d '{"username":"<<parameters.pc_username>>", "password":"<<parameters.pc_password>>"}'|jq .token| tr -d '"') 
                 echo "token: " $token
                 echo "export AUTH_TOKEN=${token}" >> $BASH_ENV
+                echo "export PC_HOST=<<parameters.pc_host>>" >> $BASH_ENV
       scan:
         description: Scan the repo for vulnerabilities in the templates against default and custom rules
         parameters:
@@ -158,6 +159,7 @@ orbs:
           - run:
               command: |
                 source $BASH_ENV
+                vi $BASH_ENV
                 #echo "AUTH_TOKEN: " ${AUTH_TOKEN}
                 SCAN_PATH=<<parameters.directory_path>>
                 if [[ -f <<parameters.directory_path>> ]]
@@ -169,9 +171,9 @@ orbs:
                 zip -r repo.zip $SCAN_PATH -x ".*"
                 if [[ variable_file_names != "" ]]
                 then
-                  response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -H 'rl-variable-file-names: [<<parameters.variable_file_names>>]' -F templateFile=@repo.zip)
+                  response=$(curl -X POST PC_HOST/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -H 'rl-variable-file-names: [<<parameters.variable_file_names>>]' -F templateFile=@repo.zip)
                 else
-                  response=$(curl -X POST https://api-kratcce2.castles.prismacloud.io/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
+                  response=$(curl -X POST PC_HOST/iac_scan -H "x-redlock-auth:${AUTH_TOKEN}" -F templateFile=@repo.zip)
                 fi
 
                 #echo "response: " $response
@@ -216,6 +218,7 @@ orbs:
                      echo "Statastics: " $stats
                   fi
                   echo "Build successful. No vulneravilities found."
+                  echo "Build successful. No vulneravilities found." > results/scan.csv
                 else
                   echo "$(echo "$response" | jq -r '.result.is_successful')"
                   echo "$(echo "$response" | jq -r '.result.is_successful')" > results/scan.csv
