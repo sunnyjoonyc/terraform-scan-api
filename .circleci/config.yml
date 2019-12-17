@@ -41,6 +41,10 @@ orbs:
             description: Low count of voluneabilities above which the build should fail.
             type: integer
             default: 0
+          operator:
+            description: The operator tells whether threshold should be OR'd or AND'd.
+            type: string
+            default: or
         steps:
           - checkout
           #- run: zip -r repo.zip . -x ".*"
@@ -54,6 +58,7 @@ orbs:
               high_cve: <<parameters.high_cve>>
               medium_cve: <<parameters.medium_cve>>
               low_cve: <<parameters.low_cve>>
+              operator: <<parameters.operator>>
       twistlock_job:
         executor: twistcli/default
         parameters:
@@ -155,6 +160,10 @@ orbs:
             description: Low count of voluneabilities above which the build should fail.
             type: integer
             default: 0   
+          operator:
+            description: The operator tells whether threshold should be OR'd or AND'd.
+            type: string
+            default: or
         steps:
           - run:
               command: |
@@ -186,27 +195,25 @@ orbs:
                   if [[ $matched != null ]]
                   then
                     stats="$(echo "$response" | jq -r '.result.severity_stats')"
-                    #echo "stats: " $stats
                     echo $matched | jq -r '(["SEVERITY","NAME","FILES"] | (., map(length*"-"))), (.[] | [.severity, .name, .files[0]]) |@tsv'> results/scan_results.csv
                     head -n 1 results/scan_results.csv > results/scan.csv && tail -n +2 results/scan_results.csv | sort -t "|" -k 1 >> results/scan.csv
+                    
                     #cat results/scan.csv | sed 's/,/ ,/g' | column -t -s, | less -S
                     #cat results/scan.csv | column -t -s, | less -S
-                    echo "<html>" ; echo "<body>" ; echo "<table>" ; while read INPUT ; do echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ; done < results/scan_results.csv ; echo "</table>"; echo "</body>" ; echo "</html>"
-                    (echo "<html>" ;
-                       echo "<body>" ;
-                         echo "<table>" ;
-                           while read INPUT ;
-                             do
-                               echo "<tr><td>${INPUT//,/</td><td>}</td></tr>" ;
-                             done < results/scan_results.csv ;
-                         echo "</table>";
-                       echo "</body>" ;
-                     echo "</html>") >results/results.html
+                     
                      high="$(echo "$stats" | jq -r '.high')"
                      med="$(echo "$stats" | jq -r '.medium')"
                      low="$(echo "$stats" | jq -r '.low')"
        
-                     if [[ ( "$high" -ge <<parameters.high_cve>> )  || ( "$medium" -ge <<parameters.medium_cve>> ) || ( "$low" -ge <<parameters.low_cve>> ) ]]
+                     
+                     if [[ <<parameters.operator>> == "or" ]]
+                     then
+                       OP = '||'
+                     else
+                       OP = '&&'
+                     fi
+
+                     if [[ ( "$high" -ge <<parameters.high_cve>> )  $OP ( "$medium" -ge <<parameters.medium_cve>> ) $OP ( "$low" -ge <<parameters.low_cve>> ) ]]
                      then
                        echo "The build failed because the vulnerability count crossed the threshold values."
                        echo "Statastics: " $stats
