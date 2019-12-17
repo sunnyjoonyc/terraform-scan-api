@@ -208,12 +208,12 @@ orbs:
                      
                      if [[ <<parameters.operator>> == "or" ]]
                      then
-                       OP = '||'
+                       OP = "||"
                      else
-                       OP = '&&'
+                       OP = "&&"
                      fi
 
-                     if [[ ( "$high" -ge <<parameters.high_cve>> )  $OP ( "$medium" -ge <<parameters.medium_cve>> ) $OP ( "$low" -ge <<parameters.low_cve>> ) ]]
+                     if [[ ( "$high" -ge <<parameters.high_cve>> )  "$OP" ( "$medium" -ge <<parameters.medium_cve>> ) "$OP" ( "$low" -ge <<parameters.low_cve>> ) ]]
                      then
                        echo "The build failed because the vulnerability count crossed the threshold values."
                        echo "Statastics: " $stats
