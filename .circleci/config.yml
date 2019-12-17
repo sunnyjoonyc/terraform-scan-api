@@ -235,7 +235,7 @@ workflows:
           pc_password: LjXgyP11CsjeF86ZAVps 
           pc_host: https://api-kratcce2.castles.prismacloud.io
           #directory_path: ./demo/eks.tf.json
-      - scan_image/twistlock_job:
-          tl_user: test
-          tl_pass: "test@123"
-          tl_console_url: http://18.217.116.33:8081
+      #- scan_image/twistlock_job:
+          #tl_user: test
+          #tl_pass: "test@123"
+          #tl_console_url: http://18.217.116.33:8081
