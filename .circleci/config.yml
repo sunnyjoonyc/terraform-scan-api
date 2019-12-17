@@ -234,7 +234,7 @@ workflows:
           pc_username: techops+provision@redlock.io
           pc_password: LjXgyP11CsjeF86ZAVps 
           pc_host: https://api-kratcce2.castles.prismacloud.io
-          directory_path: ./demo/eks.tf.json
+          #directory_path: ./demo/eks.tf.json
       - scan_image/twistlock_job:
           tl_user: test
           tl_pass: "test@123"
