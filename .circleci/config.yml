@@ -1,18 +1,30 @@
 version: 2.1
-description: 'This is an inline job'
-
-#orbs:
- # scan_image:
 orbs:
-  twistcli: twistlock/twistcli-scan@1.0.5
+  twistcli: twistlock/twistcli-scan@1.0.4
 jobs:
-  prisma-cloud-compute-twistcli-scan-try: twistcli/scan-image
+  docker-build-and-save:
+    executor: twistcli/default
+    steps:
+      - checkout
+      - run: 'docker build -t myrepo/myimage:tag .'
+      - run: mkdir -p workspace
+      - run: 'docker save myrepo/myimage:tag -o workspace/image.tar'
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - image.tar
+  prisma-cloud-compute-scan: twistcli/scan-image
 
-workflows:  
-  scan:
+workflows:
+  scan-image:
     jobs:
-      - prisma-cloud-compute-twistcli-scan-try:
-          tl_user: test
-          tl_console_url: "http://18.217.116.33:8081"
-          tl_pass: TL_PASS
-          image: "image.tar"
+      - docker-build-and-save
+      - prisma-cloud-compute-scan:
+          requires:
+            - docker-build-and-save
+          context: tl_scan_context
+          image: 'myrepo/myimage:tag'
+          image-tar: image.tar
+          vuln-thresh: critical
+          comp-thresh: ''
+          only-fixed: true
