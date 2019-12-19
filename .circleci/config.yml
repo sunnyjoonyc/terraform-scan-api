@@ -17,10 +17,7 @@ jobs:
 workflows:
   scan-image:
     jobs:
-      - docker-build-and-save
       - prisma-cloud-compute-scan:
-          requires:
-            - docker-build-and-save
           context: tl_scan_context
           image: 'myrepo/myimage:tag'
           image-tar: image.tar
