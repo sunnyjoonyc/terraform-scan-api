@@ -8,7 +8,6 @@ jobs:
       - checkout
       - run: 'docker build -t myrepo/myimage:tag .'
       - run: mkdir -p workspace
-      - run: 'docker save myrepo/myimage:tag -o workspace/image.tar'
       - persist_to_workspace:
           root: workspace
           paths:
