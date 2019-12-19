@@ -18,9 +18,7 @@ workflows:
   scan-image:
     jobs:
       - prisma-cloud-compute-scan:
-          context: tl_scan_context
-          image: 'myrepo/myimage:tag'
-          image-tar: image.tar
-          vuln-thresh: critical
-          comp-thresh: ''
-          only-fixed: true
+          tl_user: test
+          tl_console_url: "http://18.217.116.33:8081"
+          tl_pass: TL_PASS
+          image: "image.tar"
