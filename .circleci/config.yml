@@ -12,8 +12,101 @@ jobs:
           root: workspace
           paths:
             - image.tar
-  prisma-cloud-compute-scan: twistcli/scan-image
+  prisma-cloud-compute-scan:
+    executor: twistcli/default
+    parameters:
+      tl_user:
+        description: "something"
+        type: string
+      tl_pass:
+        description: "something"
+        type: env_var_name
+      tl_console_url:
+        description: "something"
+        type: string
+      image:
+        description: "something"
+        type: string
+      vuln-thresh:
+        description: Sets the minimum vulnerability severity that returns a fail exit code. Supported values are low, medium, high, and critical
+        type: string
+        default: ''
+      comp-thresh:
+        description: Sets the minimum compliance issue severity that returns a fail exit code. Supported values are low, medium, high, and critical
+        type: string
+        default: ''
+      only-fixed:
+        description: Whether to only report vulnerabilities with fixes available
+        type: boolean
+        default: false 
+      workspace-name:
+        description: Name of workspace to docker save the image-tar into so it can be scanned by orb
+        type: string
+        default: workspace
+      image-tar:
+        description: The name of the image tar file stored in the workspace -- defaults to image.tar
+        type: string
+        default: image.tar
+    steps:
+      - twistlock-scan:
+          tl_user: <<parameters.tl_user>>
+          tl_pass: <<parameters.tl_pass>>
+          tl_console_url: <<parameters.tl_console_url>>
+          image: <<parameters.image>>
 
+commands:
+  twistlock-scan:
+    description: "something"
+    parameters:
+      tl_user:
+        description: "something"
+        type: string
+      tl_pass:
+        description: "something"
+        type: env_var_name
+      tl_console_url:
+        description: "something"
+        type: string
+      image:
+        description: "something"
+        type: string
+      vuln-thresh:
+        description: Sets the minimum vulnerability severity that returns a fail exit code. Supported values are low, medium, high, and critical
+        type: string
+        default: ''
+      comp-thresh:
+        description: Sets the minimum compliance issue severity that returns a fail exit code. Supported values are low, medium, high, and critical
+        type: string
+        default: ''
+      only-fixed:
+        description: Whether to only report vulnerabilities with fixes available
+        type: boolean
+        default: false 
+      workspace-name:
+        description: Name of workspace to docker save the image-tar into so it can be scanned by orb
+        type: string
+        default: workspace
+      image-tar:
+        description: The name of the image tar file stored in the workspace -- defaults to image.tar
+        type: string
+        default: image.tar
+    
+    steps:
+      - twistcli/install:
+          tl_user: test
+          tl_console_url: "http://18.217.116.33:8081"
+          tl_pass: TL_PASS
+      - twistcli/load:
+          tl_workspace_name: <<parameters.workspace-name>>
+          tl_image_tar: <<parameters.image-tar>>
+      - twistcli/scan:
+          tl_user: <<parameters.tl_user>>
+          tl_pass: <<parameters.tl_pass>>
+          tl_console_url: <<parameters.tl_console_url>>
+          tl_vuln_thresh: <<parameters.vuln-thresh>>
+          tl_comp_thresh: <<parameters.comp-thresh>>
+          tl_only_fixed: <<parameters.only-fixed>>
+          tl_image: <<parameters.image>>
 workflows:
   scan-image:
     jobs:
