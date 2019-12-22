@@ -6,6 +6,7 @@ orbs:
 
 jobs:
   scan-image: scan/prisma-cloud
+  scan-compute: scan/prisma-cloud-compute-twistcli-scan
   docker-build-and-save:
     executor: twistcli/default
     steps:
@@ -25,7 +26,7 @@ workflows:
           #secret-key: PC_SECRET_KEY 
           #prisma-cloud-api-url: https://api.prismacloud.io
           #directory_path: ./demo/eks.tf.json
-      - scan_image/twistlock_job:
+      - scan-compute:
           prisma-cloud-compute-user: test
           prisma-cloud-console-url: http://18.217.116.33:8081 
 
