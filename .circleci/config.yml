@@ -29,6 +29,6 @@ workflows:
       - scan-compute:
           prisma-cloud-compute-user: test
           prisma-cloud-console-url: http://18.217.116.33:8081 
-
+          image: image.tar
 
 
