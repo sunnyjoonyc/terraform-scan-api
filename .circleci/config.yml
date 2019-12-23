@@ -21,14 +21,14 @@ jobs:
 workflows:  
   scan:
     jobs:
-      #- scan-image:
-          #access-key: 833a6c35-d23d-4a07-958b-69aabb1d0d51
-          #secret-key: PC_SECRET_KEY 
-          #prisma-cloud-api-url: https://api.prismacloud.io
-          #directory_path: ./demo/eks.tf.json
-      - scan-compute:
-          prisma-cloud-compute-user: test
-          prisma-cloud-compute-url: http://18.217.116.33:8081 
-          image: image.tar
+      - scan-image:
+          access-key: 833a6c35-d23d-4a07-958b-69aabb1d0d51
+          secret-key: PC_SECRET_KEY 
+          prisma-cloud-api-url: https://api.prismacloud.io
+          directory_path: ./demo/eks.tf.json
+      #- scan-compute:
+          #prisma-cloud-compute-user: test
+          #prisma-cloud-compute-url: http://18.217.116.33:8081 
+          #image: image.tar
 
 
