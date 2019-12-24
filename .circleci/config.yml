@@ -15,8 +15,8 @@ workflows:
           secret_key: PC_SECRET_KEY 
           prisma_cloud_api_url: $PC_CLOUD_API_URL #Get it here <link>
           #templates_directory_path: ./demo/eks.tf.json
-          failure_threshold_high_severity: 1
-          failure_threshold_medium_severity: 2
-          failure_threshold_low_severity: 3
-          failure_threshold_operator: and
+          failure_criteria_high_severity: 1
+          failure_criteria_medium_severity: 2
+          failure_criteria_low_severity: 3
+          failure_criteria_operator: and
 
