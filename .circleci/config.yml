@@ -16,7 +16,7 @@ workflows:
           prisma_cloud_api_url: https://api.prismacloud.io    # Default env variable: PC_API_URL
           access_key: 833a6c35-d23d-4a07-958b-69aabb1d0d51   # Default env variable: PC_ACCESS_KEY
           secret_key: PC_SECRET_KEY  # Default env variable: PC_SECRET_KEY
-          templates_directory_path: ./demo/eks.tf.json
+          #templates_directory_path: ./demo/eks.tf.json
           failure_criteria_high_severity: 1
           failure_criteria_medium_severity: 2
           failure_criteria_low_severity: 3
