@@ -11,7 +11,6 @@ jobs:
     steps:
       - checkout
       - run: 'docker pull nginx'
-      #- run: 'docker build -t nginx:latest .'
       - run: mkdir -p workspace
       - run: 'docker image'
       - run: 'docker save nginx:latest -o workspace/image.tar'
