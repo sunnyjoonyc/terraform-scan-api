@@ -19,5 +19,5 @@ workflows:
           failure_criteria_high_severity: 1
           failure_criteria_medium_severity: 2
           failure_criteria_low_severity: 3
-          failure_criteria_operator: and
+          failure_criteria_operator: or
           terraform_variable_filenames: variable.tf
