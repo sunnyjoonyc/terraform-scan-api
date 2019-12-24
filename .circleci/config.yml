@@ -7,7 +7,7 @@ orbs:
 jobs:
   scan-iac: scan/prisma_cloud
   docker-build-and-save:
-    executor: scan/default
+    executor: scan/compute
     steps:
       - checkout
       - run: 'docker build -t nginx:latest .'
@@ -17,7 +17,6 @@ jobs:
           root: workspace
           paths:
             - image.tar
-  scan-image: scan/prisma_cloud_compute_twistcli_scan
 
 workflows:  
   scan:
@@ -34,7 +33,7 @@ workflows:
           failure_criteria_operator: and
           terraform_variable_filenames: variable.tf #comma separated list of variable file names
       - docker-build-and-save
-      - scan-image:
+      - scan/prisma_cloud_compute_twistcli_scan:
           requires:
             - docker-build-and-save
           prisma_cloud_compute_url: https://console-master-pcce.keith.lab.twistlock.com
