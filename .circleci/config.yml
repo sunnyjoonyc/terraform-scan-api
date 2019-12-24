@@ -27,4 +27,4 @@ workflows:
           prisma_cloud_compute_user: xuwang@paloaltonetworks.com 
           prisma_cloud_compute_pass: PC_COMPUTE_PASS # Default env variable: PC_COMPUTE_PASS
           image: myrepo/myimage:tag
-          image-tar: image.tar 
+          image_tar: image.tar 
