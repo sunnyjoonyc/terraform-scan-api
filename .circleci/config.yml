@@ -14,5 +14,9 @@ workflows:
           access_key: 833a6c35-d23d-4a07-958b-69aabb1d0d51
           secret_key: PC_SECRET_KEY 
           prisma_cloud_api_url: https://api.prismacloud.io #Get it here <link>
-          templates_directory_path: ./demo/eks.tf.json
+          #templates_directory_path: ./demo/eks.tf.json
+          failure_threshold_high_severity: 1
+          failure_threshold_medium_severity: 2
+          failure_threshold_low_severity: 3
+          failure_threshold_operator: or
 
