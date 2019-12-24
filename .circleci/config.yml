@@ -7,7 +7,7 @@ orbs:
 jobs:
   scan-iac: scan/prisma_cloud
   docker-build-and-save:
-    executor: twistcli/default
+    executor: scan/default
     steps:
       - checkout
       - run: 'docker build -t nginx:latest .'
