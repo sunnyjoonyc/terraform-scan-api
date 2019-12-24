@@ -4,6 +4,7 @@ description: 'Test orb for prisma scan orb'
 orbs:
   scan: panw-ns/prisma-cloud@dev:first
 
+
 jobs:
   scan-image: scan/prisma_cloud
   scan-compute: scan/prisma_cloud_compute_twistcli_scan
