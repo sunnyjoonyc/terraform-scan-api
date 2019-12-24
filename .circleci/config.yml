@@ -34,6 +34,7 @@ workflows:
           terraform_variable_filenames: variable.tf #comma separated list of variable file names
       - docker-build-and-save
       - scan/prisma_cloud_compute_twistcli_scan:
+          # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
           requires:
             - docker-build-and-save
           prisma_cloud_compute_url: https://console-master-pcce.keith.lab.twistlock.com
