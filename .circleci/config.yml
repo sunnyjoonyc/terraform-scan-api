@@ -7,6 +7,7 @@ orbs:
 jobs:
   scan-image: scan/prisma_cloud
 
+
 workflows:  
   scan:
     jobs:
