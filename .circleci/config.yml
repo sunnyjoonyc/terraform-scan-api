@@ -6,18 +6,6 @@ orbs:
 
 jobs:
   scan-image: scan/prisma_cloud
-  scan-compute: scan/prisma_cloud_compute_twistcli_scan
-  docker-build-and-save:
-    executor: twistcli/default
-    steps:
-      - checkout
-      - run: 'docker build -t myrepo/myimage:tag .'
-      - run: mkdir -p workspace
-      - run: 'docker save myrepo/myimage:tag -o workspace/image.tar'
-      - persist_to_workspace:
-          root: workspace
-          paths:
-            - image.tar
 
 workflows:  
   scan:
@@ -25,12 +13,8 @@ workflows:
       - scan-image:
           access_key: 833a6c35-d23d-4a07-958b-69aabb1d0d51
           secret_key: PC_SECRET_KEY 
-          prisma_cloud_api_url: https://api.prismacloud.io
+          prisma_cloud_api_url: https://api.prismacloud.io #Get it here <link>
           templates_directory_path: ./demo/eks.tf.json
-      #- scan-compute:
-          #prisma-cloud-compute-user: test
-          #prisma-cloud-compute-url: http://18.217.116.33:8081 
-          #image: image.tar
 
 
 
