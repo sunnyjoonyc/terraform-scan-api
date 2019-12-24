@@ -19,6 +19,7 @@ jobs:
           root: workspace
           paths:
             - image.tar
+
 workflows:  
   scan:
     jobs:
