@@ -10,8 +10,10 @@ jobs:
     executor: scan/compute
     steps:
       - checkout
-      - run: 'docker build -t nginx:latest .'
+      - run: 'docker pull nginx'
+      #- run: 'docker build -t nginx:latest .'
       - run: mkdir -p workspace
+      - run: 'docker image'
       - run: 'docker save nginx:latest -o workspace/image.tar'
       - persist_to_workspace:
           root: workspace
