@@ -13,7 +13,7 @@ workflows:
       - scan-image:
           access_key: i833a6c35-d23d-4a07-958b-69aabb1d0d51
           secret_key: PC_SECRET_KEY 
-          prisma_cloud_api_url: https://api.prismacloud1.io #Get it here <link>
+          prisma_cloud_api_url: https://api.prismacloud.io #Get it here <link>
           templates_directory_path: ./demo/eks.tf.json
           failure_criteria_high_severity: 1
           failure_criteria_medium_severity: 2
