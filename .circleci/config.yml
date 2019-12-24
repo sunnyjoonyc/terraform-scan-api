@@ -16,5 +16,3 @@ workflows:
           prisma_cloud_api_url: https://api.prismacloud.io #Get it here <link>
           templates_directory_path: ./demo/eks.tf.json
 
-
-
