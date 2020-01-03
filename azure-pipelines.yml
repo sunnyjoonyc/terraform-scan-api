@@ -15,7 +15,7 @@ steps:
 
 - task: Prisma Cloud IaC Scan@1
   inputs:
-    Path: 'terraform-scan-api'
+    Path: 'demo'
     prismaCloudService: 'iac-testing'
     High: '0'
     Medium: '0'
