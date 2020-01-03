@@ -1,0 +1,34 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+ branches:
+    include:
+    - master
+ paths:
+    include:
+    - '*.tf*'
+    exclude:
+    - '.git'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+
+- task: Prisma Cloud IaC Scan@1
+  inputs:
+    Path: '.'
+    prismaCloudService: 'iac-testing'
+    High: '1'
+    Medium: '4'
+    Low: '3'
+    Operator: 'or'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'

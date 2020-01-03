@@ -5,14 +5,15 @@ orbs:
   scan: panw-ns/prisma-cloud@dev:first
 
 jobs:
-  scan-image: scan/prisma-cloud
+  scan-iac: scan/prisma_cloud
   docker-build-and-save:
-    executor: twistcli/default
+    executor: scan/compute
     steps:
       - checkout
-      - run: 'docker build -t myrepo/myimage:tag .'
+      - run: 'docker pull nginx'
       - run: mkdir -p workspace
-      - run: 'docker save myrepo/myimage:tag -o workspace/image.tar'
+      - run: 'docker image'
+      - run: 'docker save nginx:latest -o workspace/image.tar'
       - persist_to_workspace:
           root: workspace
           paths:
@@ -21,12 +22,24 @@ jobs:
 workflows:  
   scan:
     jobs:
-      - scan-image:
-          access-key: 833a6c35-d23d-4a07-958b-69aabb1d0d51
-          secret-key: PC_SECRET_KEY 
-          prisma-cloud-api-url: https://api.prismacloud.io
-          #directory_path: ./demo/eks.tf.json
-      #- scan_image/twistlock_job:
-          #tl_user: test
-          #tl_pass: "test@123"
-          #tl_console_url: http://18.217.116.33:8081 
+      - scan-iac:
+          # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
+          prisma_cloud_api_url: https://api.prismacloud.io    # Default env variable: PC_API_URL
+          access_key: 833a6c35-d23d-4a07-958b-69aabb1d0d51   # Default env variable: PC_ACCESS_KEY
+          secret_key: PC_SECRET_KEY  # Default env variable: PC_SECRET_KEY
+          #templates_directory_path: ./demo/eks.tf.json
+          failure_criteria_high_severity: 1
+          failure_criteria_medium_severity: 2
+          failure_criteria_low_severity: 3
+          failure_criteria_operator: and
+          terraform_variable_filenames: variable.tf #comma separated list of variable file names
+      - docker-build-and-save
+      - scan/scan_image:
+          # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
+          requires:
+            - docker-build-and-save
+          prisma_cloud_compute_url: https://console-master-pcce.keith.lab.twistlock.com
+          prisma_cloud_compute_user: keith 
+          prisma_cloud_compute_pass: PC_COMPUTE_PASS # Default env variable: PC_COMPUTE_PASS
+          image: nginx:latest
+          image_tar: image.tar 
