@@ -10,16 +10,15 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- checkout: self
 
 - task: Prisma Cloud IaC Scan@1
   inputs:
-    Path: '.'
+    Path: 'demo'
     prismaCloudService: 'iac-testing'
-    High: '0'
-    Medium: '0'
-    Low: '0'
+    High: '1'
+    Medium: '4'
+    Low: '3'
     Operator: 'or'
 
 - script: |
