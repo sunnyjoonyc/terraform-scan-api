@@ -13,6 +13,15 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
+- task: Prisma Cloud IaC Scan@1
+  inputs:
+    Path: '/'
+    prismaCloudService: 'iac-testing'
+    High: '0'
+    Medium: '0'
+    Low: '0'
+    Operator: 'or'
+
 - script: |
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
