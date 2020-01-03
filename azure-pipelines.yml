@@ -4,7 +4,14 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+ branches:
+    include:
+    - master
+ paths:
+    include:
+    - '*.tf*'
+    exclude:
+    - '.git'
 
 pool:
   vmImage: 'ubuntu-latest'
