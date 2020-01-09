@@ -24,7 +24,7 @@ steps:
     Path: 'repo'
     prismaCloudService: 'iac-testing'
     High: '1'
-    Medium: '4'
+    Medium: '1'
     Low: '3'
     Operator: 'or'
 
