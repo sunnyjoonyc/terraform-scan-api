@@ -9,7 +9,7 @@ trigger:
     - master
  paths:
     include:
-    - '*.tf*'
+    - '*.tf'
     exclude:
     - '.git'
 
@@ -21,10 +21,10 @@ steps:
 
 - task: Prisma Cloud IaC Scan@1
   inputs:
-    Path: '.'
+    Path: 'repo'
     prismaCloudService: 'iac-testing'
     High: '1'
-    Medium: '4'
+    Medium: '1'
     Low: '3'
     Operator: 'or'
 
