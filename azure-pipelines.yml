@@ -22,10 +22,10 @@ steps:
 - task: Prisma Cloud IaC Scan@1
   inputs:
     Path: 'repo'
-    prismaCloudService: 'iac-testing'
-    High: '1'
-    Medium: '1'
-    Low: '3'
+    prismaCloudService: 'Prisma Cloud IaC Scan connection'
+    High: '0'
+    Medium: '0'
+    Low: '0'
     Operator: 'or'
 
 - script: |
