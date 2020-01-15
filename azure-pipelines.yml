@@ -14,14 +14,14 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: prisma-cloud-compute-scan@1
+- task: Prisma Cloud IaC Scan@1
   inputs:
-    scanType: 'images'
-    twistlockService: 'compute scan'
-    vulnerabilityThreshold: 'high'
-    onlyFixed: false
-    gracePeriod: '0'
-    complianceThreshold: 'high'
+    Path: 'repo'
+    prismaCloudService: 'Prisma cloud bug fix'
+    High: '0'
+    Medium: '0'
+    Low: '0'
+    Operator: 'or'
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
