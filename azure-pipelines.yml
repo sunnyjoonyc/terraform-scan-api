@@ -13,15 +13,14 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-
 - task: twistcli-scan@1
   inputs:
     scanType: 'images'
     twistlockService: 'Prisma cloud compute test'
-    vulnerabilityThreshold: 'high'
+    vulnerabilityThreshold: 'low'
     onlyFixed: false
     gracePeriod: '0'
-    complianceThreshold: 'high'
+    complianceThreshold: 'low'
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
