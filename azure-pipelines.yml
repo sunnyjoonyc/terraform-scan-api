@@ -21,7 +21,7 @@ steps:
 
 - task: Prisma Cloud IaC Scan@1
   inputs:
-    Path: '\'
+    Path: 'repo'
     prismaCloudService: 'Prisma cloud bug fix'
     High: '0'
     Medium: '0'
