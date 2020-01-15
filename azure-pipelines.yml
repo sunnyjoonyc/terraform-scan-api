@@ -1,4 +1,5 @@
 # Starter pipeline
+
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -19,14 +20,14 @@ pool:
 steps:
 - checkout: self
 
-- task: Prisma Cloud IaC Scan@1
+- task: twistcli-scan@1
   inputs:
-    Path: 'repo'
-    prismaCloudService: 'Prisma cloud bug fix'
-    High: '0'
-    Medium: '0'
-    Low: '0'
-    Operator: 'or'
+    scanType: 'images'
+    twistlockService: 'Prisma cloud compute test'
+    vulnerabilityThreshold: 'high'
+    onlyFixed: false
+    gracePeriod: '0'
+    complianceThreshold: 'high'
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
