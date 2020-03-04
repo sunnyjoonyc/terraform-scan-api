@@ -17,8 +17,8 @@ pool:
 steps:
 - task: Prisma Cloud IaC Scan@1
   inputs:
-    Path: 'repo'
-    prismaCloudService: 'Prisma Cloud IaC Scan connection'
+    Path: '$(System.DefaultWorkingDirectory)'
+    prismaCloudService: 'Prisma Cloud IaC Scan connection-Mar4'
     High: '0'
     Medium: '0'
     Low: '0'
