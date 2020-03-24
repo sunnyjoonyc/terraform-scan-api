@@ -34,6 +34,8 @@ workflows:
           failure_criteria_low_severity: 3
           failure_criteria_operator: and
           terraform_variable_filenames: variable.tf #comma separated list of variable file names
+          asset_name: CircleCI-Terraform
+          labels: Org-Engineer, Team-ShiftLeft
       - docker-build-and-save
       - scan/scan_image:
           # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
