@@ -26,7 +26,7 @@ workflows:
       - scan-iac:
           # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
           prisma_cloud_api_url: https://api.prismacloud.io    # Default env variable: PC_API_URL
-          access_key: 68ba3cfd-6a7f-4fe1-af52-5abee87f5e8e   # Default env variable: PC_ACCESS_KEY
+          access_key: 8e7520f2-dd1a-4812-85ad-cad18ccb1ebc   # Default env variable: PC_ACCESS_KEY
           secret_key: PC_SECRET_KEY  # Default env variable: PC_SECRET_KEY
           #templates_directory_path: ./demo/eks.tf.json
           failure_criteria_high_severity: 1
@@ -34,6 +34,8 @@ workflows:
           failure_criteria_low_severity: 3
           failure_criteria_operator: and
           terraform_variable_filenames: variable.tf #comma separated list of variable file names
+          asset_name: CircleCI-Terraform
+          labels: Org-Engineer, Team-ShiftLeft
       - docker-build-and-save
       - scan/scan_image:
           # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
