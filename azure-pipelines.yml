@@ -17,11 +17,10 @@ steps:
   inputs:
     Path: '$(System.DefaultWorkingDirectory)'
     prismaCloudService: 'prisma-iac-15March'
-    High: '4'
+    High: '3'
     Medium: '2'
     Low: '1'
     Operator: 'or'
- 
 
 - script: |
     echo Add other tasks to build, test, and deploy your project.
