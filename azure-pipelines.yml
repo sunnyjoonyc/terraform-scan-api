@@ -17,7 +17,7 @@ steps:
   inputs:
     Path: '$(System.DefaultWorkingDirectory)'
     prismaCloudService: 'prisma-iac-15March'
-    High: '3'
+    High: '5'
     Medium: '2'
     Low: '1'
     Operator: 'or'
