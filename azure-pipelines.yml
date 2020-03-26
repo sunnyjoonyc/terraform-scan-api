@@ -17,6 +17,8 @@ steps:
   inputs:
     Path: '$(System.DefaultWorkingDirectory)'
     prismaCloudService: 'prisma-iac-15March'
+    prismaCloudIacAssetName: 'Azure-terraform-repo'
+    prismaCloudIacLabels: 'Team-shiftleft'
     High: '3'
     Medium: '2'
     Low: '1'
