@@ -17,11 +17,11 @@ steps:
   inputs:
     Path: '$(System.DefaultWorkingDirectory)'
     prismaCloudService: 'prisma-iac-15March'
-    High: '2'
-    Medium: '5'
-    Low: '1'
+    High: '0'
+    Medium: '0'
+    Low: '0'
     Operator: 'or'
-
+    
 - script: |
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
