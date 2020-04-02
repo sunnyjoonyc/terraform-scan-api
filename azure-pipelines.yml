@@ -17,11 +17,9 @@ steps:
   inputs:
     Path: '$(System.DefaultWorkingDirectory)'
     prismaCloudService: 'prisma-iac-15March'
-    prismaCloudIacAssetName: 'Azure-pipeline-test'
-    prismaCloudIacLabels: 'Org: PANW'
     High: '5'
-    Medium: '2'
-    Low: '1'
+    Medium: '4'
+    Low: '3'
     Operator: 'or'
 
 - script: |
