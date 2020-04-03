@@ -17,7 +17,7 @@ pool:
 steps:
 - task: Prisma Cloud IaC Scan@1
   inputs:
-    Path: 'demo'
+    Path: 'repo'
     prismaCloudService: 'prisma-iac-15March'
     High: '2'
     Medium: '1'
