@@ -1,12 +1,12 @@
 version: 0.2
  
 # In this example, we're using environment variables
-# to store the username & password of our Twistlock CI user account
+# to store the username & password of our Prisma Cloud Compute CI user account
 # and the URL to our console
  
-# TL_USER:  The Twistlock user with the CI User role
-# TL_PASS:  The password for this user account
-# TL_CONSOLE_URL:  The base URL for the console -- http://console.<my_company>.com:8083 -- without a trailing /
+# PC_COMPUTE_USER:  The Prisma Cloud Compute user with the CI User role
+# PC_COMPUTE_PASS:  The password for this user account
+# PC_COMPUTE_CONSOLE_URL:  The base URL for the console -- http://console.<my_company>.com:8083 -- without a trailing /
 phases:
   install:
     runtime-versions:
@@ -19,18 +19,18 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
-      - curl -k -u $TL_USER:$TL_PASS --output ./twistcli $TL_CONSOLE_URL/api/v1/util/twistcli
+      - curl -k -u $PC_COMPUTE_USER:$PC_COMPUTE_PASS --output ./twistcli $PC_COMPUTE_CONSOLE_URL/api/v1/util/twistcli
       - chmod +x ./twistcli
-      - echo Scanning with twistcli $TL_PASS $TL_USER
+      - echo Scanning with twistcli $PC_COMPUTE_PASS $PC_COMPUTE_USER
  
       # Run the scan with twistcli, providing detailed results in CodeBuild and
-      # pushing the results to the Twistlock console.
+      # pushing the results to the Prisma Cloud Compute console.
       # --details returns all vulnerabilities & compliance issues rather than just summaries.
-      # -address points to our Twistlock console
+      # -address points to our Prisma Cloud Compute console
       # -u and -p provide credentials for the console.  These creds only need the CI User role.
       # Finally, we provide the name of the image we built with 'docker build', above.
  
-      - ./twistcli images scan --details -address $TL_CONSOLE_URL -u $TL_USER -p $TL_PASS $IMAGE_REPO_NAME:$IMAGE_TAG
+      - ./twistcli images scan --details -address $PC_COMPUTE_CONSOLE_URL -u $PC_COMPUTE_USER -p $PC_COMPUTE_PASS $IMAGE_REPO_NAME:$IMAGE_TAG
        
       # Add --vulnerability-threshold and/or --compliance-threshold to this command to
       # fail builds based on the thresholds.
