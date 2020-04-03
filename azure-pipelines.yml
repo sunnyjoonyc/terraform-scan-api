@@ -1,6 +1,7 @@
 # Starter pipeline
 
 
+
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -19,8 +20,8 @@ steps:
     Path: '$(System.DefaultWorkingDirectory)'
     prismaCloudService: 'prisma-iac-15March'
     High: '4'
-    Medium: '6'
-    Low: '2'
+    Medium: '2'
+    Low: '3'
     Operator: 'or'
     
 - script: |
