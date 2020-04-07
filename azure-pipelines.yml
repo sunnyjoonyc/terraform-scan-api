@@ -21,8 +21,8 @@ steps:
     Path: 'demo'
     prismaCloudService: 'Prisma IaC QA'
     High: '0'
-    Medium: '1'
-    Low: '2'
+    Medium: '14'
+    Low: '5'
     Operator: 'or'
  
 
