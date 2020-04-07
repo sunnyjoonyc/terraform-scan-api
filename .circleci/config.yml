@@ -25,8 +25,8 @@ workflows:
     jobs:
       - scan-iac:
           # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
-          prisma_cloud_api_url: https://api.prismacloud.io    # Default env variable: PC_API_URL
-          access_key: 68ba3cfd-6a7f-4fe1-af52-5abee87f5e8e   # Default env variable: PC_ACCESS_KEY
+          prisma_cloud_api_url: https://api-sl.qa.prismacloud.io    # Default env variable: PC_API_URL
+          access_key: ngarg@paloaltonetworks.com   # Default env variable: PC_ACCESS_KEY
           secret_key: PC_SECRET_KEY  # Default env variable: PC_SECRET_KEY
           #templates_directory_path: ./demo/eks.tf.json
           failure_criteria_high_severity: 1
