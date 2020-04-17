@@ -1,6 +1,6 @@
 template_type: TF
 terraform_version: 0.11
   
-prisma_tags:
+tags:
   - Org:Engineering
   - Team:Shift_Left
