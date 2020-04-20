@@ -1,5 +1,9 @@
 template_type: TF
 terraform_version: 0.11
+
+terraform_011_parameters:
+  variable_files: 
+  - demo/variable.tf.json
   
 tags:
   - Org:Engineering
