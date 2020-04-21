@@ -25,7 +25,7 @@ steps:
     Medium: '0'
     Low: '0'
     Operator: 'or'
-    Tags: 'phase=deployment, task=scan'
+    Tags: 'phase:deployment, task:scan'
  
 
 - script: |
