@@ -10,6 +10,9 @@ terraform_version: 0.11
 terraform_011_parameters:
   variable_files: 
   - variables.tf.json
+  variable_values:
+  - name: key_name
+    value: key-pair
 # Labels are the tags for the repo    
 tags:
 - Org:Engineering
