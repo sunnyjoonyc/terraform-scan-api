@@ -1,6 +1,6 @@
 # This is the configuration file for Iac Scan API.
 # Specify the template types.The valid values are TF, CFT, K8S
-#template_type: TF
+template_type: TF
 # terraform version valid values are 0.11 or 0.12.
 # 0.12 is the default version. For 0.11, user needs to specify.
 terraform_version: 0.11
