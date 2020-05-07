@@ -8,6 +8,7 @@ Steps:
 3. Update config.yaml to add vulnerability scan and conditional statements.
 4. Pass/Fail build depending on the scan results.
 5. terraform 12 support.
+6. CFT and K8s zip scan support.
 
 
 
