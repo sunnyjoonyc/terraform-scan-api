@@ -15,7 +15,7 @@ failure_criteria_for_creating_issues:
   operator: or
   
 # Define github asset name 
-github_asset_name: "Github Asset Dev"
+#github_asset_name: "Github Asset Dev"
 
 # Define tags
 tags: 
