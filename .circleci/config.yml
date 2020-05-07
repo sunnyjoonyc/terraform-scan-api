@@ -28,7 +28,7 @@ workflows:
           prisma_cloud_api_url: https://api-sl.qa.prismacloud.io    # Default env variable: PC_API_URL
           access_key: ngarg@paloaltonetworks.com   # Default env variable: PC_ACCESS_KEY
           secret_key: PC_SECRET_KEY  # Default env variable: PC_SECRET_KEY
-          templates_directory_path: demo
+          #templates_directory_path: demo
           failure_criteria_high_severity: 1
           failure_criteria_medium_severity: 2
           failure_criteria_low_severity: 3
