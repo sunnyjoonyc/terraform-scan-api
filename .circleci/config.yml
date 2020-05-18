@@ -3,7 +3,7 @@ description: 'Test orb for prisma scan orb'
 
 
 orbs:
-  scan: panw-ns/prisma-cloud@dev:first
+  scan: prisma_cloud/devops_security@2.0.0
 
 jobs:
   scan-iac: scan/prisma_cloud
