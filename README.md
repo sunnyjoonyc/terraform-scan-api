@@ -7,8 +7,7 @@ Steps:
 2. Testing with default config.yaml.
 3. Update config.yaml to add vulnerability scan and conditional statements.
 4. Pass/Fail build depending on the scan results.
-
-
+5. Twistcli updated with latest changes.
 
 
 
