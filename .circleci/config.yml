@@ -39,7 +39,7 @@ workflows:
           requires:
             - docker-build-and-save
           prisma_cloud_compute_url: https://us-east1.cloud.twistlock.com/us-1-111523697
-          prisma_cloud_compute_user: 547642da-831b-480b-81b0-69030da2577b:vUZEMaY6 
+          prisma_cloud_compute_user: e8246385-2265-4ca8-b380-02a5112c7c98
           prisma_cloud_compute_pass: PC_COMPUTE_PASS # Default env variable: PC_COMPUTE_PASS
           image: nginx:latest
           image_tar: image.tar 
