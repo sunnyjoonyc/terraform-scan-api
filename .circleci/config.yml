@@ -39,7 +39,7 @@ workflows:
           requires:
             - docker-build-and-save
           prisma_cloud_compute_url: https://104.198.194.35:8083
-          prisma_cloud_compute_user: pradnesh 
+          prisma_cloud_compute_user: aqsa 
           prisma_cloud_compute_pass: PC_COMPUTE_PASS # Default env variable: PC_COMPUTE_PASS
           image: nginx:latest
           image_tar: image.tar 
