@@ -8,6 +8,7 @@ Steps:
 3. Update config.yaml to add vulnerability scan and conditional statements.
 4. Pass/Fail build depending on the scan results.
 5. Twistcli updated with latest changes.
+6. AWS Twistcli support added.
 
 
 
