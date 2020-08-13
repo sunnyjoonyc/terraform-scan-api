@@ -3,10 +3,9 @@ description: 'Test orb for prisma scan orb'
 
 
 orbs:
-  scan: panw-ns/prisma-cloud@dev:first
+  prisma: panw-ns/prisma-cloud@dev:first
 
 jobs:
-  scan-iac: scan/prisma_cloud
   docker-build-and-save:
     executor: scan/compute
     steps:
@@ -23,7 +22,7 @@ jobs:
 workflows:  
   scan:
     jobs:
-      - scan-iac:
+      - prisma/iac_scan:
           # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
           prisma_cloud_api_url: https://api.prismacloud.io    # Default env variable: PC_API_URL
           access_key: PC_ACCESS_KEY   # Default env variable: PC_ACCESS_KEY
@@ -34,7 +33,7 @@ workflows:
           failure_criteria_low_severity: 3
           failure_criteria_operator: and
       - docker-build-and-save
-      - scan/scan_image:
+      - prisma/scan_image:
           # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
           requires:
             - docker-build-and-save
