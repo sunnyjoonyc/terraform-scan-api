@@ -7,7 +7,7 @@ orbs:
 
 jobs:
   docker-build-and-save:
-    executor: scan/compute
+    executor: prisma/compute
     steps:
       - checkout
       - run: 'docker pull nginx'
@@ -33,7 +33,7 @@ workflows:
           failure_criteria_low_severity: 3
           failure_criteria_operator: and
       - docker-build-and-save
-      - prisma/scan_image:
+      - prisma/image_scan:
           # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
           requires:
             - docker-build-and-save
