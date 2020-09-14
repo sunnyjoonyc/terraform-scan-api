@@ -38,8 +38,8 @@ workflows:
           # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
           requires:
             - docker-build-and-save
-          prisma_cloud_compute_url: https://us-east1.cloud.twistlock.com/us-1-111523697
-          prisma_cloud_compute_user: e8246385-2265-4ca8-b380-02a5112c7c98
-          prisma_cloud_compute_pass: prisma_cloud_compute_pass # Default env variable: PC_COMPUTE_PASS
+          prisma_cloud_compute_url: https://104.198.194.35:8083
+          prisma_cloud_compute_user: niddhi
+          prisma_cloud_compute_pass: PC_COMPUTE_PASS # Default env variable: PC_COMPUTE_PASS
           image: nginx:latest
           image_tar: image.tar 
