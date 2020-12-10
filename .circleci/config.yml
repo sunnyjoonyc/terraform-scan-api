@@ -2,44 +2,18 @@ version: 2.1
 description: 'Test orb for prisma scan orb'
 
 orbs:
-  scan: panw-ns/prisma-cloud@dev:first
+  prisma: prisma_cloud/devops_security@2.2.0
 
-jobs:
-  scan-iac: scan/prisma_cloud
-  docker-build-and-save:
-    executor: scan/compute
-    steps:
-      - checkout
-      - run: 'docker pull nginx'
-      - run: mkdir -p workspace
-      - run: 'docker image'
-      - run: 'docker save nginx:latest -o workspace/image.tar'
-      - persist_to_workspace:
-          root: workspace
-          paths:
-            - image.tar
-
-workflows:  
+workflows:
   scan:
     jobs:
-      - scan-iac:
-          # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
+      - prisma/iac_scan:
           prisma_cloud_api_url: https://api.prismacloud.io    # Default env variable: PC_API_URL
-          access_key: 358ec15f-72f6-4eba-bad6-01a96cf00bdb   # Default env variable: PC_ACCESS_KEY
-          secret_key: prisma_cloud_secret_key  # Default env variable: PC_SECRET_KEY
-          #templates_directory_path: ./demo/eks.tf.json
+          access_key: PC_ACCESS_KEY
+          secret_key: PC_SECRET_KEY
           failure_criteria_high_severity: 1
           failure_criteria_medium_severity: 2
           failure_criteria_low_severity: 3
           failure_criteria_operator: and
           terraform_variable_filenames: variable.tf #comma separated list of variable file names
-      - docker-build-and-save
-      - scan/scan_image:
-          # Get Prisma Cloud API URL here: https://api.docs.prismacloud.io
-          requires:
-            - docker-build-and-save
-          prisma_cloud_compute_url: https://104.198.194.35:8083
-          prisma_cloud_compute_user: niddhi
-          prisma_cloud_compute_pass: PC_COMPUTE_PASS # Default env variable: PC_COMPUTE_PASS
-          image: nginx:latest
-          image_tar: image.tar 
+          tags: 'env:development, team:shiftleft'
