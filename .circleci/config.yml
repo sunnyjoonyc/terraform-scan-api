@@ -8,7 +8,7 @@ workflows:
   scan:
     jobs:
       - prisma/iac_scan:
-          prisma_cloud_api_url: https://api.prismacloud.io    # Default env variable: PC_API_URL
+          prisma_cloud_api_url: https://api2.prismacloud.io    # Default env variable: PC_API_URL
           access_key: PC_ACCESS_KEY
           secret_key: PC_SECRET_KEY
           failure_criteria_high_severity: 1
